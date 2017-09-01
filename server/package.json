@@ -13,5 +13,8 @@
     "morgan": "~1.8.1",
     "mysql": "^2.14.1",
     "serve-favicon": "~2.4.2"
+  },
+  "devDependencies": {
+    "express-session": "^1.15.5"
   }
 }

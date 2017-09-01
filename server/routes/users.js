@@ -1,9 +1,10 @@
 var express = require('express');
 var router = express.Router();
+var Users = require('../models/Users');
 
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
+// 查询用户
+router.get('/', function (req, res, next) {
+    Users.getUserList(req,res);
 });
 
 module.exports = router;
