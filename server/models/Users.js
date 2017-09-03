@@ -14,7 +14,7 @@ module.exports = {
         let addUserSql = 'insert into user (username,email,pwd) values(?,?,?)';
         
 
-        let params = ['a3','a3@qq.com','123'];
+        let params = ['a1','a1@qq.com','123'];
 
         pool.getConnection((err,conn)=>{
             if(err) {

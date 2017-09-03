@@ -5,6 +5,7 @@ var Users = require('../models/Users');
 // 查询用户
 router.get('/', function (req, res, next) {
     Users.getUserList(req,res);
+    // Users.register(req,res);
 });
 
 module.exports = router;
