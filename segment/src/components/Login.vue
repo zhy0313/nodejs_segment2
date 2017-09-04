@@ -8,31 +8,37 @@
                 <span class="close pointer" @click='hide'>×</span>
             </div>
             <div class="register">
-                <div class="sub-title" >注册新帐号</div>
+                <div class="sub-title">注册新帐号</div>
                 <label for="name" class="name">名字</label>
-                <input type="text" id='name' placeholder="真实姓名或常用昵称">
-                <label><input type="radio" id="usePhone" v-model="typeRadio" value="1" class="type-radio"> 用手机号注册</label>
-                <label><input type="radio" id="useEmail" v-model="typeRadio" value="2" class="type-radio email-radio"> 用Email注册</label>
-                <input type="tel" placeholder="仅支持大陆手机号">
+                <input type="text" id='name' placeholder="真实姓名或常用昵称" v-model.trim="register.name">
+                <div class="notice" v-show='validate.user'>请输入用户名</div>
+                <label><input type="radio" id="usePhone" v-model ="register.typeRadio" value="1" class="type-radio"> 用手机号注册</label>
+                <label><input type="radio" id="useEmail" v-model ="register.typeRadio" value="2" class="type-radio email-radio"> 用Email注册</label>
+                <input type="tel" placeholder="仅支持大陆手机号" v-model.trim="register.mobile">
+                <div class="notice" v-show="validate.regMobile">请输入手机号</div>
                 <div class="code-wrapping">
-                    <input type="text" placeholder="短信验证码" class='msg-code'>
+                    <input type="text" placeholder="短信验证码" class='msg-code' v-model.trim="register.code">
                     <input type="button" :value="telCode" class="get-code pointer">
                 </div>
-                <label for="pwd" class="pwd">密码<input type="text" id="pwd" placeholder="不少于6位"></label>
+                <div class="notice" v-show='validate.code'>请输入验证码</div>
+                <label for="pwd" class="pwd">密码<input type="text" id="pwd" placeholder="不少于6位" v-model.trim="register.pwd"></label>
+                <div class="notice" v-show='validate.regPwd'>请设置密码</div>
                 <div class="agreement-wrapper clearfix">
                     <div class="agreement">同意并接受<a class="contract" href='#'>《服务条款》</a></div>
-                    <input type="button" value="注册" class="btn-register pointer">
+                    <input type="button" value="注册" class="btn-register pointer" @click="getRegister">
                 </div>
             </div>
             <div class="login">
                 <div class="sub-title">用户登录</div>
                 <label for="userName" class="user-name">手机号或Email</label>
                 <input type="text" id="userName" placeholder="11位手机号或email">
+                <div class="notice" v-show='validate.loginMobile'>请输入正确的手机号</div>
                 <div class="pwd-wrapper clearfix">
                     <label for="pwd" class="pwd">密码</label>
                     <span class="foget-pwd pointer">忘记密码</span>
                 </div>
                 <input type="text" placeholder="密码">
+                <div class="notice" v-show="validate.loginPwd">请输入密码</div>
                 <div class="login-wrapper">
                     <label> <input type="checkbox" v-model="rememberPwd" class="remember-status">记住登录状态</label>
                     <input type="button" value="登录" class="btn-login pointer">
@@ -48,17 +54,65 @@
 export default {
     data(){
         return {
+            validate:{
+                user:false,
+                regMobile:false,
+                code:false,
+                regPwd:false,
+                loginMobile:false,
+                loginPwd:false
+            },
             rememberPwd: true,
             telCode:'获取验证码',
-            typeRadio:1
+            register:{
+                name:'',
+                typeRadio:1,
+                mobile: '',
+                code: '',
+                pwd: ''
+            }
         }
     },
-
+    
     methods:{
+        // 关闭验证
+        stopValidate(val,text){
+            // console.log('val',val)
+            // console.log(this.register.user)
+        },
+        // 注册
+        getRegister(){
+            let para = {
+                name: this.register.name,
+                mobile: this.register.mobile,
+                typeRadio: this.register.typeRadio,
+                code: this.register.code,
+                pwd: this.register.pwd
+            }
+
+            this.getValidate();
+           
+        },
+
+        
+
+        
+
+       
+
+        // 关闭登录注册框
         hide(){
             this.$emit('hide')
         }
+    },
+
+    updated(){
+        
+    },
+
+    created(){
     }
+
 }
 </script>
 
@@ -79,6 +133,11 @@ export default {
             background-color: #fff;
             border-radius: 5px;
             font-size: 0;
+
+            // 注册验证
+            .notice {
+                color:red;
+            }
 
             .title {
                 height: 58px;
