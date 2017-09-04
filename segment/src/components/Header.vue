@@ -15,8 +15,8 @@
                 <span class="iconfont icon-search pointer"></span>
             </div>
             <div class="btn-wrapper">
-                <span class="login pointer">立即登录</span>
-                <span class="register pointer">免费注册</span>
+                <span class="login pointer" @click='login'>立即登录</span>
+                <span class="register pointer"  @click='login'>免费注册</span>
             </div>
         </div>
         <div class="sub-title-content clearfix">
@@ -32,7 +32,7 @@
             </ul>
         </div>
         <!-- 登录/注册 -->
-        <login></login>
+        <login @hide='hide' v-show="showLogin"></login>
     </div>
 </template>
 <script>
@@ -44,8 +44,7 @@ export default {
     },
     data(){
         return{
-            
-            // usePhone:false,
+            showLogin:false,
             showQueList:true,
             questionList:[
                 { id:0,label:'全部'},
@@ -84,6 +83,16 @@ export default {
         }
     },
 
+    methods:{
+        hide(){
+            this.showLogin = false;
+        },
+
+        login(){
+            this.showLogin = true
+        }
+    },
+
     directives: {
         // 注册一个局部的自定义指令 v-expand
         expand: {
@@ -105,9 +114,7 @@ export default {
             }
         }
     },  
-    methods:{
-       
-    },
+   
 
     created(){
     }
