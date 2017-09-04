@@ -10,8 +10,22 @@
             <div class="register">
                 <div class="sub-title">注册新帐号</div>
                 <label for="name" class="name">名字</label>
-                <input type="text" id='name' placeholder="真实姓名或常用昵称" v-model.trim="register.name">
-                <div class="notice" v-show='validate.user'>请输入用户名</div>
+                <div>
+
+                <input type="text" id='name' placeholder="真实姓名或常用昵称" v-model.trim="register.name"
+                    v-validate="'required:name'" 
+                    :class="{'input': true, 'is-danger': errors.has('name') }"
+                    >
+                <div v-show="errors.has('name')" class="help is-danger">请输入用户名</div>
+
+
+
+                </div>
+                <div>
+                    <input v-validate="'required|email'" :class="{'input-err': true, 'is-danger': errors.has('email') }" name="email" type="text" placeholder="Email">
+                    <span v-show="errors.has('email')" class="help is-danger">{{ errors.first('email') }}</span>
+                </div>
+
                 <label><input type="radio" id="usePhone" v-model ="register.typeRadio" value="1" class="type-radio"> 用手机号注册</label>
                 <label><input type="radio" id="useEmail" v-model ="register.typeRadio" value="2" class="type-radio email-radio"> 用Email注册</label>
                 <input type="tel" placeholder="仅支持大陆手机号" v-model.trim="register.mobile">
@@ -90,7 +104,6 @@ export default {
                 pwd: this.register.pwd
             }
 
-            this.getValidate();
            
         },
 
@@ -187,6 +200,14 @@ export default {
                     margin:10px 0;
                 }
                 
+                .input-err {
+                    // border:1px solid red;
+                }
+
+                .is-danger {
+                    // color:red;
+                }
+
                 //  手机号注册/Email注册/记住登录状态
                 .type-radio, .remember-status {
                     display: inline-block;
