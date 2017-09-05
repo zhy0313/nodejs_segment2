@@ -3,8 +3,11 @@
 import Vue from 'vue';
 import App from './App';
 import router from './router';
-import VeeValidate from 'vee-validate';
+// import VeeValidate from 'vee-validate';
 
+// 表单验证
+import Vuelidate from 'vuelidate';
+Vue.use(Vuelidate);
 
 // 格式化css
 import './assets/css/reset.css';
@@ -15,7 +18,7 @@ import './assets/css/iconfont/iconfont.css';
 
 Vue.config.productionTip = false;
 
-// 表单验证
+/* // 表单验证 
 const config = {
     errorBagName: 'errors', // change if property conflicts.
     fieldsBagName: 'fields',
@@ -37,7 +40,7 @@ const config = {
     validity: true,
     aria: true
 };
-Vue.use(VeeValidate,config);
+Vue.use(VeeValidate,config); */
 
 
 

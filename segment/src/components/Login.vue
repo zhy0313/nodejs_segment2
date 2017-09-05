@@ -11,25 +11,13 @@
                 <div class="sub-title">注册新帐号</div>
                 <label for="name" class="name">名字</label>
                 <div>
-
-                <input type="text" id='name' placeholder="真实姓名或常用昵称" v-model.trim="register.name"
-                    v-validate="'required:name'" 
-                    :class="{'input': true, 'is-danger': errors.has('name') }"
-                    >
-                <div v-show="errors.has('name')" class="help is-danger">请输入用户名</div>
-
-
-
-                </div>
-                <div>
-                    <input v-validate="'required|email'" :class="{'input-err': true, 'is-danger': errors.has('email') }" name="email" type="text" placeholder="Email">
-                    <span v-show="errors.has('email')" class="help is-danger">{{ errors.first('email') }}</span>
-                </div>
-
+                <input type="text" id='name' placeholder="真实姓名或常用昵称" v-model.trim="register.name" @blur="$v.regName.$touch()">
+                <div class="notice" v-if="$v.regName.required">请输入用户名 {{$v.regName.$error}}</div>
+            </div>
                 <label><input type="radio" id="usePhone" v-model ="register.typeRadio" value="1" class="type-radio"> 用手机号注册</label>
                 <label><input type="radio" id="useEmail" v-model ="register.typeRadio" value="2" class="type-radio email-radio"> 用Email注册</label>
-                <input type="tel" placeholder="仅支持大陆手机号" v-model.trim="register.mobile">
-                <div class="notice" v-show="validate.regMobile">请输入手机号</div>
+                <input type="tel" placeholder="请输入手机号" v-model.trim="register.mobile"  @blur="$v.regMobile.$touch()">
+                <div class="notice"  v-if="$v.regMobile.$error">请输入手机号 {{$v.regMobile.$error}}</div>
                 <div class="code-wrapping">
                     <input type="text" placeholder="短信验证码" class='msg-code' v-model.trim="register.code">
                     <input type="button" :value="telCode" class="get-code pointer">
@@ -65,6 +53,7 @@
 </template>
 
 <script>
+import { required, minLength, between } from 'vuelidate/lib/validators'
 export default {
     data(){
         return {
@@ -84,10 +73,21 @@ export default {
                 mobile: '',
                 code: '',
                 pwd: ''
-            }
+            },
+          
         }
     },
-    
+
+    validations: {
+        regName: {
+            required
+        },
+        
+        regMobile: {
+            required
+        }
+    },
+
     methods:{
         // 关闭验证
         stopValidate(val,text){
