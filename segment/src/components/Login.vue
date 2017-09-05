@@ -7,22 +7,31 @@
                 <span>登录</span>
                 <span class="close pointer" @click='hide'>×</span>
             </div>
+            <!-- 注册 -->
             <div class="register">
                 <div class="sub-title">注册新帐号</div>
                 <label for="name" class="name">名字</label>
                 <div>
-                <input type="text" id='name' placeholder="真实姓名或常用昵称" v-model.trim="register.name" @blur="$v.regName.$touch()">
-                <div class="notice" v-if="$v.regName.required">请输入用户名 {{$v.regName.$error}}</div>
-            </div>
-                <label><input type="radio" id="usePhone" v-model ="register.typeRadio" value="1" class="type-radio"> 用手机号注册</label>
-                <label><input type="radio" id="useEmail" v-model ="register.typeRadio" value="2" class="type-radio email-radio"> 用Email注册</label>
-                <input type="tel" placeholder="请输入手机号" v-model.trim="register.mobile"  @blur="$v.regMobile.$touch()">
-                <div class="notice"  v-if="$v.regMobile.$error">请输入手机号 {{$v.regMobile.$error}}</div>
-                <div class="code-wrapping">
-                    <input type="text" placeholder="短信验证码" class='msg-code' v-model.trim="register.code">
-                    <input type="button" :value="telCode" class="get-code pointer">
+                    <input type="text" id='name' placeholder="真实姓名或常用昵称" v-model.trim="register.name">
+                    <div class="notice">{{register.name}}</div>
                 </div>
-                <div class="notice" v-show='validate.code'>请输入验证码</div>
+                <label><input type="radio" id="usePhone" v-model ="register.typeRadio" value="0" class="type-radio"> 用手机号注册</label>
+                <label><input type="radio" id="useEmail" v-model ="register.typeRadio" value="1" class="type-radio email-radio"> 用Email注册</label>
+                <!-- 手机号注册  -->
+                <div class="register-phone" v-if="register.typeRadio == 0">
+                    <input type="tel" placeholder="请输入手机号" v-model.trim="register.mobile"  @blur="$v.regMobile.$touch()">
+                    <div class="notice"  v-if="$v.regMobile.$error">请输入手机号 {{$v.regMobile.$error}}</div>
+                    <div class="code-wrapping">
+                        <input type="text" placeholder="短信验证码" class='msg-code' v-model.trim="register.code" @blur='$v.regCode.$touch()'>
+                        <input type="button" :value="telCode" class="get-code pointer">
+                    </div>
+                    <div class="notice" v-if='$v.regCode.$error'>请输入验证码</div>
+                </div>
+                <!-- email注册 -->
+                <div class="register-email" v-else>
+                    <input type="tel" placeholder="请输入邮箱" v-model.trim="register.email"  @blur="$v.regEmail.$touch()">
+                    <div class="notice"  v-if="$v.regEmail.$error">请输入Email {{$v.regEmail.$error}}</div>
+                </div>    
                 <label for="pwd" class="pwd">密码<input type="text" id="pwd" placeholder="不少于6位" v-model.trim="register.pwd"></label>
                 <div class="notice" v-show='validate.regPwd'>请设置密码</div>
                 <div class="agreement-wrapper clearfix">
@@ -53,7 +62,7 @@
 </template>
 
 <script>
-import { required, minLength, between } from 'vuelidate/lib/validators'
+import { required, minLength, between, email } from 'vuelidate/lib/validators'
 export default {
     data(){
         return {
@@ -69,8 +78,9 @@ export default {
             telCode:'获取验证码',
             register:{
                 name:'',
-                typeRadio:1,
+                typeRadio:0,
                 mobile: '',
+                Email: '',
                 code: '',
                 pwd: ''
             },
@@ -84,6 +94,14 @@ export default {
         },
         
         regMobile: {
+            required
+        },
+        regEmail: {
+            required,
+            email
+        },
+
+        regCode: {
             required
         }
     },
