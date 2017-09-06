@@ -84,10 +84,12 @@ export default {
     },
 
     methods:{
+        // 收起注册/登录框
         hide(){
             this.showLogin = false;
         },
 
+        // 注册/登录
         login(){
             this.showLogin = true
         }

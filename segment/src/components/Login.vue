@@ -12,7 +12,7 @@
                 <div class="sub-title">注册新帐号</div>
                 <label for="name" class="name">名字</label>
                 <input type="text" id='name' placeholder="真实姓名或常用昵称" v-model.trim="register.name">
-                <div class="notice" v-if='validate.name'>请输入用户名</div>
+                <div class="notice" v-if='validate.name'>{{validate.nameMsg}}</div>
                 <label><input type="radio" id="usePhone" v-model ="register.typeRadio" value="0" class="type-radio"> 用手机号注册</label>
                 <label><input type="radio" id="useEmail" v-model ="register.typeRadio" value="1" class="type-radio email-radio">用Email注册</label>
                 <!-- 手机号注册  -->
@@ -63,7 +63,7 @@
 </template>
 
 <script>
-import { REGISTER, GET_USER_LIST } from '@/api/api'
+import { GET_USER_LIST, LOGIN,  REGISTER } from '@/api/api'
 
 export default {
     data(){
@@ -76,6 +76,7 @@ export default {
                 regPwd:false,
                 loginMobile:false,
                 loginPwd:false,
+                nameMsg:'请输入用户名',
                 emailMsg:'请输入正确email',
                 mobileMsg:'请输入手机号',
                 codeMsg:'请输入4位验证码',
@@ -123,16 +124,41 @@ export default {
             let para = {
                 name: this.register.name,
                 pwd: this.register.pwd,
-                user : this.register.mobile 
+                mobile : this.register.mobile,
+                email: this.register.email
             }
-            if( this.register.typeRadio == 1 ){
-                para.user = this.register.email
-            } 
+
+            if(this.register.typeRadio == 0) {
+                para.email = '';
+            }else if(this.register.typeRadio == 1){
+                para.mobile = '';
+            }
+
             // 注册验证
             if( this.validateReg() ){
-                console.log(para)
                 REGISTER(para).then(res=>{
-                    console.log(res)
+                    let data = res.data;
+                    if(data.code == 200){   //注册成功
+                        // 收起注册/登录
+                        this.hide(); 
+                    }else if( data.code == 400 ){ //注册失败
+                        switch(data.errType){
+                            case 'name':
+                                this.validate.name = true;
+                                this.validate.nameMsg = '该用户名已被注册';
+                                break;
+                            case 'email':
+                                this.validate.regEmail = true;
+                                this.validate.emailMsg = '该邮箱已被注册';
+                                break;
+                            case 'mobile':
+                                this.validate.regMobile = true;
+                                this.validate.mobileMsg = '该手机号已被注册';
+                                break;
+                            default:
+                                break;    
+                        }
+                    }
                 })
             }
 
@@ -146,7 +172,10 @@ export default {
             }
             // 登录验证
             if( this.validateLogin() ){
-
+                // 验证通过
+                LOGIN(para).then(res=>{
+                    console.log(res)
+                })
             }
 
         },
@@ -312,14 +341,6 @@ export default {
                     margin:10px 0;
                 }
                 
-                .input-err {
-                    // border:1px solid red;
-                }
-
-                .is-danger {
-                    // color:red;
-                }
-
                 //  手机号注册/Email注册/记住登录状态
                 .type-radio, .remember-status {
                     display: inline-block;

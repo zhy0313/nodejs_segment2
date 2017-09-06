@@ -1,17 +1,21 @@
 var express = require('express');
 var router = express.Router();
-var Users = require('../models/Users');
+var UsersModel = require('../models/UsersModel');
 
 // 查询用户列表
 router.get('/', function (req, res) {
-    Users.getUserList(req,res);
+    UsersModel.getUserList(req,res);
     // Users.register(req,res);
 });
 
 // 注册
-router.get('/register',(req,res)=>{
-    Users.register(req,res);
+router.post('/register',(req,res)=>{
+    UsersModel.register(req,res);
 });
 
+// 登录
+router.post('/login',(req,res)=>{
+    UsersModel.login(req,res);
+});
 
 module.exports = router;
