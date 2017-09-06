@@ -14,7 +14,9 @@ module.exports = {
         let addUserSql = 'insert into user (username,email,pwd) values(?,?,?)';
         
 
-        let params = ['a1','a1@qq.com','123'];
+        let params = ['b1','b1@qq.com','123'];
+
+        console.log(req);
 
         pool.getConnection((err,conn)=>{
             if(err) {
@@ -29,7 +31,11 @@ module.exports = {
                     return;
                 }
                 console.log(rs);
-                res.send(rs);
+                let data = {
+                    code: 200,
+                    data: rs
+                };
+                res.send(data);
             });
             conn.release();
         });
@@ -52,7 +58,6 @@ module.exports = {
                 if(err) throw err;
 
                 let arr = [];
-
                 if(rs.length){
                     rs.forEach((e)=>{
                         let obj = {
@@ -66,7 +71,6 @@ module.exports = {
                         code:200,
                         data:arr
                     };
-                    
                     res.send(data);
                     return;
                 }

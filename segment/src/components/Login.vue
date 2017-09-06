@@ -7,52 +7,53 @@
                 <span>登录</span>
                 <span class="close pointer" @click='hide'>×</span>
             </div>
-            <!-- 注册 -->
+            <!-- 注册框 -->
             <div class="register">
                 <div class="sub-title">注册新帐号</div>
                 <label for="name" class="name">名字</label>
-                <div>
-                    <input type="text" id='name' placeholder="真实姓名或常用昵称" v-model.trim="register.name">
-                    <div class="notice">{{register.name}}</div>
-                </div>
+                <input type="text" id='name' placeholder="真实姓名或常用昵称" v-model.trim="register.name">
+                <div class="notice" v-if='validate.name'>请输入用户名</div>
                 <label><input type="radio" id="usePhone" v-model ="register.typeRadio" value="0" class="type-radio"> 用手机号注册</label>
-                <label><input type="radio" id="useEmail" v-model ="register.typeRadio" value="1" class="type-radio email-radio"> 用Email注册</label>
+                <label><input type="radio" id="useEmail" v-model ="register.typeRadio" value="1" class="type-radio email-radio">用Email注册</label>
                 <!-- 手机号注册  -->
                 <div class="register-phone" v-if="register.typeRadio == 0">
-                    <input type="tel" placeholder="请输入手机号" v-model.trim="register.mobile"  @blur="$v.regMobile.$touch()">
-                    <div class="notice"  v-if="$v.regMobile.$error">请输入手机号 {{$v.regMobile.$error}}</div>
+                    <input type="tel" placeholder="请输入手机号" v-model.trim="register.mobile">
+                    <div class="notice"  v-if="validate.regMobile">{{validate.mobileMsg}}</div>
                     <div class="code-wrapping">
-                        <input type="text" placeholder="短信验证码" class='msg-code' v-model.trim="register.code" @blur='$v.regCode.$touch()'>
-                        <input type="button" :value="telCode" class="get-code pointer">
+                        <input type="text" placeholder="短信验证码" class='msg-code' v-model.trim="register.code">
+                        <input type="button" :value="telCode" class="get-code pointer" @click="getMobileCode" ref="getCode">
                     </div>
-                    <div class="notice" v-if='$v.regCode.$error'>请输入验证码</div>
+                    <div class="notice" v-if='validate.code'>{{validate.codeMsg}}</div>
                 </div>
                 <!-- email注册 -->
                 <div class="register-email" v-else>
-                    <input type="tel" placeholder="请输入邮箱" v-model.trim="register.email"  @blur="$v.regEmail.$touch()">
-                    <div class="notice"  v-if="$v.regEmail.$error">请输入Email {{$v.regEmail.$error}}</div>
-                </div>    
-                <label for="pwd" class="pwd">密码<input type="text" id="pwd" placeholder="不少于6位" v-model.trim="register.pwd"></label>
-                <div class="notice" v-show='validate.regPwd'>请设置密码</div>
+                    <input type="tel" placeholder="请输入邮箱" v-model.trim="register.email">
+                    <div class="notice"  v-if="validate.regEmail">{{validate.emailMsg}}</div>
+                </div>   
+
+                <label for="pwd" class="pwd">密码<input type="password" id="pwd" placeholder="不少于6位" v-model.trim="register.pwd"></label>
+                <div class="notice" v-if='validate.regPwd'>密码不少于6位</div>
                 <div class="agreement-wrapper clearfix">
                     <div class="agreement">同意并接受<a class="contract" href='#'>《服务条款》</a></div>
-                    <input type="button" value="注册" class="btn-register pointer" @click="getRegister">
+                    <input type="button" value="注册" class="btn-register pointer" @click="registerHandler">
                 </div>
             </div>
+
+            <!-- 登录框 -->
             <div class="login">
                 <div class="sub-title">用户登录</div>
                 <label for="userName" class="user-name">手机号或Email</label>
-                <input type="text" id="userName" placeholder="11位手机号或email">
-                <div class="notice" v-show='validate.loginMobile'>请输入正确的手机号</div>
+                <input type="text" id="userName" placeholder="11位手机号或email" v-model="login.user">
+                <div class="notice" v-if='validate.loginMobile'>{{validate.loginMsg}}</div>
                 <div class="pwd-wrapper clearfix">
                     <label for="pwd" class="pwd">密码</label>
                     <span class="foget-pwd pointer">忘记密码</span>
                 </div>
-                <input type="text" placeholder="密码">
-                <div class="notice" v-show="validate.loginPwd">请输入密码</div>
+                <input type="text" placeholder="密码" v-model="login.pwd">
+                <div class="notice" v-show="validate.loginPwd">{{validate.loginPwdMsg}}</div>
                 <div class="login-wrapper">
                     <label> <input type="checkbox" v-model="rememberPwd" class="remember-status">记住登录状态</label>
-                    <input type="button" value="登录" class="btn-login pointer">
+                    <input type="button" value="登录" class="btn-login pointer" @click="loginHandler">
                 </div>
             </div>
         </div>
@@ -62,71 +63,160 @@
 </template>
 
 <script>
-import { required, minLength, between, email } from 'vuelidate/lib/validators'
+import { REGISTER, GET_USER_LIST } from '@/api/api'
+
 export default {
     data(){
         return {
             validate:{
-                user:false,
+                name:false,
                 regMobile:false,
+                regEmail:false,
                 code:false,
                 regPwd:false,
                 loginMobile:false,
-                loginPwd:false
-            },
+                loginPwd:false,
+                emailMsg:'请输入正确email',
+                mobileMsg:'请输入手机号',
+                codeMsg:'请输入4位验证码',
+                loginMsg: '请输入帐号',
+                loginPwdMsg: '请输入密码'
+            },  
             rememberPwd: true,
             telCode:'获取验证码',
-            register:{
+            register:{  //注册
                 name:'',
                 typeRadio:0,
                 mobile: '',
-                Email: '',
+                email: '',
                 code: '',
                 pwd: ''
             },
+            login: {    //登录
+                user: '',
+                pwd: ''
+            }
           
         }
     },
 
-    validations: {
-        regName: {
-            required
-        },
-        
-        regMobile: {
-            required
-        },
-        regEmail: {
-            required,
-            email
-        },
-
-        regCode: {
-            required
-        }
-    },
-
     methods:{
-        // 关闭验证
-        stopValidate(val,text){
-            // console.log('val',val)
-            // console.log(this.register.user)
+        // 获取短信验证码
+        getMobileCode(){
+            let sec = 50
+            this.$refs.getCode.disabled = true
+            let setTime = setInterval(()=>{
+                if( sec > 1){
+                    sec--
+                    this.telCode = `${sec}s`
+                    setTime;
+                }else{
+                    clearInterval(setTime)
+                    this.telCode = '获取验证码'
+                    this.$refs.getCode.disabled = false
+                }
+            },1000)
         },
+
         // 注册
-        getRegister(){
+        registerHandler(){
             let para = {
                 name: this.register.name,
-                mobile: this.register.mobile,
-                typeRadio: this.register.typeRadio,
-                code: this.register.code,
-                pwd: this.register.pwd
+                pwd: this.register.pwd,
+                user : this.register.mobile 
+            }
+            if( this.register.typeRadio == 1 ){
+                para.user = this.register.email
+            } 
+            // 注册验证
+            if( this.validateReg() ){
+                console.log(para)
+                REGISTER(para).then(res=>{
+                    console.log(res)
+                })
             }
 
-           
         },
 
-        
+        // 登录
+        loginHandler(){
+            let para = {
+                user: this.login.user,
+                pwd: this.login.pwd
+            }
+            // 登录验证
+            if( this.validateLogin() ){
 
+            }
+
+        },
+
+        // 表单验证-注册
+        validateReg(){
+            // 重置状态
+            this.validate = {
+                name:false,
+                regMobile:false,
+                regEmail:false,
+                code:false,
+                regPwd:false,
+                emailMsg:'请输入正确email',
+                mobileMsg:'请输入手机号',
+                codeMsg:'请输入4位验证码'
+            }
+
+            let regexMob = /^1[3|5|7|8]\d{9}/   // 验证手机号
+            let regexEmail = /(^$|^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$)/    // 验证邮箱
+
+            if( !this.register.name ){
+                this.validate.name = true;
+                return
+            }
+            if( !this.register.mobile && this.register.typeRadio == 0  ){
+                this.validate.regMobile = true
+                return
+            }
+            if( !regexMob.test(this.register.mobile) && this.register.typeRadio == 0 ){
+                this.validate.regMobile = true
+                this.validate.mobileMsg = '请输入11位手机号'
+                return
+            }
+            if(!regexEmail.test(this.register.email) && this.register.typeRadio == 1){
+                this.validate.regEmail = true
+                this.validate.emailMsg = '请输入正确的Email'
+                return
+            }
+            if( this.register.typeRadio == 0 && this.register.code.length !== 4 ){
+                this.validate.code = true
+                return
+            }
+            if(this.register.pwd.length < 6){
+                this.validate.regPwd = true
+                return
+            }
+            
+            return true
+        },
+
+        // 表单验证-登录
+        validateLogin(){
+            // 重置状态
+            this.validate = {
+                loginMobile:false,
+                loginPwd:false,
+                loginMsg: '请输入帐号',
+                loginPwdMsg: '请输入密码'
+            }
+            if(!this.login.user){
+                this.validate.loginMobile = true
+                return 
+            }
+            if(!this.login.pwd){
+                this.validate.loginPwd = true
+                return 
+            }
+            return true
+        },
         
 
        
@@ -142,6 +232,10 @@ export default {
     },
 
     created(){
+        // let tel = 15260435516
+        // console.log(tel)
+        // let reg = /^1[3|4|5|7|8]\d{9}$/;
+        // console.log(reg.test(tel))
     }
 
 }

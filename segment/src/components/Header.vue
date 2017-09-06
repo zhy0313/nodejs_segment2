@@ -100,7 +100,6 @@ export default {
             inserted: function(el) {
                 // 获取焦点
                 el.onfocus = function(){
-                    console.log(el.parentNode)
                     el.style = "border:1px solid #3b99fc; box-shadow:0 0 3px 0 #3b99fc";  // 添加阴影
                     el.parentNode.style="width:650px;"  // 展开 
                 }
