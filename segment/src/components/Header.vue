@@ -14,9 +14,12 @@
                 <input type="text" placeholder="搜索问题或关键字" class="search-input" id='search'  v-expand>
                 <span class="iconfont icon-search pointer"></span>
             </div>
-            <div class="btn-wrapper">
+            <div class="btn-wrapper" v-if="showLoginBtn">
                 <span class="login pointer" @click='login'>立即登录</span>
                 <span class="register pointer"  @click='login'>免费注册</span>
+            </div>
+            <div class="greeting-wrapper" v-else>
+                <span>你好 {{username}} {{userId}}</span>
             </div>
         </div>
         <div class="sub-title-content clearfix">
@@ -32,7 +35,7 @@
             </ul>
         </div>
         <!-- 登录/注册 -->
-        <login @hide='hide' v-show="showLogin"></login>
+        <login @hide='hide' @hasLogin='hasLogin' v-if="showLogin"></login>
     </div>
 </template>
 <script>
@@ -45,7 +48,10 @@ export default {
     data(){
         return{
             showLogin:false,
+            showLoginBtn:true,
             showQueList:true,
+            username:'',
+            userId:'',
             questionList:[
                 { id:0,label:'全部'},
                 { id:1,label:'javascript'},
@@ -87,6 +93,14 @@ export default {
         // 收起注册/登录框
         hide(){
             this.showLogin = false;
+        },
+
+        // 登录成功
+        hasLogin(){
+            let data = JSON.parse(sessionStorage.getItem('segUser'))
+            this.username = data.username
+            this.userId = data.uid
+            this.showLoginBtn = false
         },
 
         // 注册/登录
@@ -215,7 +229,7 @@ export default {
             }
 
             // 登录/注册按钮
-            .btn-wrapper {
+            .btn-wrapper,.greeting-wrapper {
                 position: absolute;
                 right: 0;
                 top: 20px;
@@ -246,6 +260,10 @@ export default {
                 }
             }
 
+            // 问候
+            .greeting-wrapper {
+                font-size: 16px;
+            }
 
         }
 

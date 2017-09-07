@@ -161,22 +161,31 @@ export default {
                     }
                 })
             }
-
         },
 
         // 登录
         loginHandler(){
+            // 登录验证
+            if (!this.validateLogin()) return;
+
+            // 验证通过
             let para = {
                 user: this.login.user,
                 pwd: this.login.pwd
             }
-            // 登录验证
-            if( this.validateLogin() ){
-                // 验证通过
-                LOGIN(para).then(res=>{
-                    console.log(res)
-                })
-            }
+            LOGIN(para).then(res=>{
+                if(res.data.code == 400){
+                    this.validate.loginMobile = true
+                    this.validate.loginPwd = true
+                    this.validate.loginMsg = res.data.msg;
+                    this.validate.loginPwdMsg = res.data.msg;
+                }else {
+                    let data = JSON.stringify(res.data.data)
+                    sessionStorage.setItem('segUser',data)
+                    this.hide();
+                    this.hasLogin();
+                }
+            })
 
         },
 
@@ -253,6 +262,11 @@ export default {
         // 关闭登录注册框
         hide(){
             this.$emit('hide')
+        },
+
+        // 登录成功
+        hasLogin(){
+            this.$emit('hasLogin')
         }
     },
 

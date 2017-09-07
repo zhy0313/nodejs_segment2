@@ -62,7 +62,49 @@ module.exports = {
 
     // 登录
     login(req,res){
-        // let loginSql = 'select uid,username from where '
+        // console.log('session::',req.session);
+        // TODO
+        // setToken
+
+        let loginSql = 'select uid,username from user where (email=? or mobile=?) and pwd=?';
+        let body = req.body;
+        let params = [body.user,body.user,body.pwd];
+        
+        pool.getConnection((err,conn)=>{
+            let data = {
+                code: 200,
+                msg:'success'
+            };
+
+            if(err){
+                console.log(err);
+                data.code = 401;
+                data.msg = err.message;
+                res.send(data);
+                return;
+            }
+
+            conn.query(loginSql,params,(err,rs)=>{
+                if(err){
+                    console.log(`错误2:${err.message}`);
+                    data.code = 401,
+                    data.msg = err.message,
+                    res.send(data);
+                    return;
+                }
+
+                // 查询结果结果
+                if(rs.length > 0 ){
+                    data.data = rs[0];
+                }else {
+                    data.code = 400;
+                    data.msg = '用户名或密码错误';
+                }
+                
+                res.send(data);
+            });
+            conn.release();
+        });
     },
 
     // 用户列表
