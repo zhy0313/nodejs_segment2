@@ -1,10 +1,16 @@
 <template>
     <div class="has-login clearfix">
-        <div class="btn">
-            <span class="btn-ask">提问题</span>
-            <span class="btn-arrow">
+        <div class="btn pointer">
+            <span class="btn-ask">{{navType}}</span>
+            <span class="btn-arrow"   @mouseover="showSubNav = true" @mouseleave='showSubNav = false'>
                 <span class="arrow"></span>
             </span>
+            <ul class="sub-nav-wrapper" v-show="showSubNav"  @mouseover="showSubNav = true" @mouseleave='showSubNav = false'>
+                <li class="sub-nav-item">提问题</li>
+                <li class="sub-nav-item">写头条</li>
+                <li class="sub-nav-item">写文章</li>
+                <li class="sub-nav-item">记笔记</li>
+            </ul>
         </div>
         <span class="iconfont icon-remind pointer"></span>
         <span class="iconfont icon-feedback pointer"></span>
@@ -25,7 +31,9 @@ import { LOGOUT } from '@/api/api'
 export default {
     data(){
         return {
-            showUserInfo: false
+            showUserInfo: false,
+            showSubNav: false,
+            navType: '提问题'
         }
     },
     methods:{
@@ -55,7 +63,6 @@ export default {
         
         //  提问按钮
         .btn {
-            display: inline-block;
             width:94px;
             height: 34px;
             line-height: 34px;
@@ -100,7 +107,29 @@ export default {
                     border-top-color: #fff;
                 }
             }
+
+            // 文章类型下拉框
+            .sub-nav-wrapper {
+                position: absolute;
+                top:34px;
+                width:92px;
+                font-size: 14px;
+                border: 1px solid #eee;
+                box-shadow: 0 0 10px rgba(0,0,0,0.3);
+                background-color: #fff;
+                color:@gray-l;
+                text-align: center;
+
+                .sub-nav-item {
+                    &:hover {
+                        background-color: #eee;
+                    }
+                }
+            }
+
         }
+
+
 
         // 
         .iconfont {

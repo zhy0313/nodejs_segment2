@@ -3,11 +3,15 @@
     <div class="layout">
         <!-- 头部导航 -->
         <nav-header></nav-header>
+        <!-- 页面主体 -->
+        <div class="main">
+            <router-view></router-view>
+        </div>
     </div>
 </template>
 
 <script>
-import NavHeader from '@/components/header/Header';
+import NavHeader from './header/Header';
 export default {
     components:{
         NavHeader
