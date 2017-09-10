@@ -1,5 +1,6 @@
 var mysql = require('mysql');
 var config = require('../db/config');
+var checkSession = require('./session/CheckSession'); 
 
 var pool = mysql.createPool(config.mysql);
 
@@ -11,23 +12,22 @@ module.exports = {
     // 注册
     register(req,res){
 
-        console.log('body',req.body);
         let addUserSql = 'insert into user (username,email,mobile,pwd) values(?,?,?,?)';
         
         let body = req.body;
-        let email = body.email == '' ? null : body.email;
-        let mobile = body.mobile == '' ? null : body.mobile;
+        let email = body.email == '' ? null : body.email;       // 为空则存储null
+        let mobile = body.mobile == '' ? null : body.mobile;    // 为空则存储null
         let params = [body.name,email,mobile,body.pwd];
 
         pool.getConnection((err,conn)=>{
             let data = {
                 code: 200,
-                data: ''
+                msg: ''
             };
             if(err) {
                 console.log(`连接错误:${err}`);
                 data.code = 400;
-                data.data = '连接错误,请稍后再试';
+                data.msg = '连接错误,请稍后再试';
                 res.send(data);
                 return;
             }
@@ -38,22 +38,22 @@ module.exports = {
                     data.code = 400;
                     let msg = err.message;
                     if(msg.indexOf('email_unique') > -1){
-                        data.data = '邮箱已被注册';
+                        data.msg = '邮箱已被注册';
                         data.errType = 'email';
                     }else if(msg.indexOf('username_unique') > -1){
-                        data.data = '用户名已被注册';
+                        data.msg = '用户名已被注册';
                         data.errType = 'name';
                     }else if(msg.indexOf('mobile_unique')){
-                        data.data = '手机已被注册';
+                        data.msg = '手机已被注册';
                         data.errType = 'mobile';
                     } else {
-                        data.data = msg;
+                        data.msg = msg;
                     }
                     res.send(data);
                     return;
                 }
-
-                data.data = '注册成功';
+                req.session.sessionID = body.name;
+                data.msg = 'success';
                 res.send(data);
             });
             conn.release();
@@ -96,11 +96,11 @@ module.exports = {
                 // 查询结果结果
                 if(rs.length > 0 ){
                     data.data = rs[0];
+                    req.session.sessionID = rs[0].username;
                 }else {
                     data.code = 400;
                     data.msg = '用户名或密码错误';
                 }
-                
                 res.send(data);
             });
             conn.release();

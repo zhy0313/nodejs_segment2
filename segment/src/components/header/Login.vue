@@ -49,7 +49,7 @@
                     <label for="pwd" class="pwd">密码</label>
                     <span class="foget-pwd pointer">忘记密码</span>
                 </div>
-                <input type="text" placeholder="密码" v-model="login.pwd">
+                <input type="password" placeholder="密码" v-model="login.pwd">
                 <div class="notice" v-show="validate.loginPwd">{{validate.loginPwdMsg}}</div>
                 <div class="login-wrapper">
                     <label> <input type="checkbox" v-model="rememberPwd" class="remember-status">记住登录状态</label>
@@ -138,9 +138,12 @@ export default {
             if( this.validateReg() ){
                 REGISTER(para).then(res=>{
                     let data = res.data;
+                    console.log(res)
                     if(data.code == 200){   //注册成功
-                        // 收起注册/登录
+                        let msg = JSON.stringify(data.msg)
+                        sessionStorage.setItem('segUser',msg)
                         this.hide(); 
+                        this.hasLogin();
                     }else if( data.code == 400 ){ //注册失败
                         switch(data.errType){
                             case 'name':
@@ -180,7 +183,7 @@ export default {
                     this.validate.loginMsg = res.data.msg;
                     this.validate.loginPwdMsg = res.data.msg;
                 }else {
-                    let data = JSON.stringify(res.data.data)
+                    let data = JSON.stringify(res.data.msg)
                     sessionStorage.setItem('segUser',data)
                     this.hide();
                     this.hasLogin();
@@ -285,7 +288,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-    @import '../assets/css/mixin.less';
+    @import '../../assets/css/mixin.less';
 
     .login {
         // 登录注册

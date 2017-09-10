@@ -1,14 +1,13 @@
 <template>
     <!-- layout -->
     <div class="layout">
-        
         <!-- 头部导航 -->
         <nav-header></nav-header>
     </div>
 </template>
 
 <script>
-import NavHeader from '@/components/Header';
+import NavHeader from '@/components/header/Header';
 export default {
     components:{
         NavHeader

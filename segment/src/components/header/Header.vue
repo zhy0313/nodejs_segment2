@@ -14,12 +14,14 @@
                 <input type="text" placeholder="搜索问题或关键字" class="search-input" id='search'  v-expand>
                 <span class="iconfont icon-search pointer"></span>
             </div>
+            <!-- 登录/注册按钮 -->
             <div class="btn-wrapper" v-if="showLoginBtn">
                 <span class="login pointer" @click='login'>立即登录</span>
                 <span class="register pointer"  @click='login'>免费注册</span>
             </div>
-            <div class="greeting-wrapper" v-else>
-                <span>你好 {{username}} {{userId}}</span>
+            <!-- 已登录 -->
+            <div class="haslogin-wrapper" v-else>
+                <has-login @hasLogout='hasLogout'></has-login>
             </div>
         </div>
         <div class="sub-title-content clearfix">
@@ -34,24 +36,24 @@
                 <li class="sub-title-item pointer" v-for="(item,index) in newsList" :key="index">{{item.label}}</li>
             </ul>
         </div>
-        <!-- 登录/注册 -->
+        <!-- 登录/注册  -->
         <login @hide='hide' @hasLogin='hasLogin' v-if="showLogin"></login>
     </div>
 </template>
 <script>
 import Login from './Login';
+import HasLogin from './HasLogin';
 
 export default {
     components:{
-        Login
+        Login,
+        HasLogin
     },
     data(){
         return{
             showLogin:false,
             showLoginBtn:true,
             showQueList:true,
-            username:'',
-            userId:'',
             questionList:[
                 { id:0,label:'全部'},
                 { id:1,label:'javascript'},
@@ -88,7 +90,11 @@ export default {
             ],
         }
     },
-
+    computed:{
+    //    showLoginBtn(){
+    //        return this.$store.commit('checkLogin')
+    //    } 
+    },
     methods:{
         // 收起注册/登录框
         hide(){
@@ -98,15 +104,28 @@ export default {
         // 登录成功
         hasLogin(){
             let data = JSON.parse(sessionStorage.getItem('segUser'))
-            this.username = data.username
-            this.userId = data.uid
             this.showLoginBtn = false
         },
 
         // 注册/登录
         login(){
             this.showLogin = true
-        }
+        },
+
+        // 退出
+        hasLogout(){
+            this.showLoginBtn = true
+        },
+
+        // 检测登录
+        checkLogin(){
+            if(sessionStorage.getItem('segUser')){
+                this.showLoginBtn = false
+            }else {
+                this.showLoginBtn = true
+            }
+        },
+        
     },
 
     directives: {
@@ -132,12 +151,14 @@ export default {
    
 
     created(){
+        // 检测登录
+        this.checkLogin();
     }
 }
 </script>
 
 <style lang="less" scoped>
-    @import '../assets/css/mixin.less';
+    @import '../../assets/css/mixin.less';
 
     .nav-header {
         font-size: 0;
@@ -201,7 +222,7 @@ export default {
             .search-wrapper {
                 position: absolute;
                 top: 15px;
-                right: 284px;
+                right: 290px;
                 z-index: 1;
                 width: 248px;
                 height: 30px;
@@ -228,14 +249,17 @@ export default {
                 }
             }
 
-            // 登录/注册按钮
-            .btn-wrapper,.greeting-wrapper {
+            // 登录/注册按钮 已登录包裹层
+            .btn-wrapper,.haslogin-wrapper {
                 position: absolute;
                 right: 0;
-                top: 20px;
+                top: 15px;
                 font-size: 0;
-
+                height: 34px;
+                
                 .login,.register {
+                    display: inline-block;
+                    vertical-align: top;
                     font-size:14px;
                     font-weight: 500;
                     padding:10px 15px;
@@ -260,8 +284,8 @@ export default {
                 }
             }
 
-            // 问候
-            .greeting-wrapper {
+            // 已登录包裹层
+            .haslogin-wrapper {
                 font-size: 16px;
             }
 

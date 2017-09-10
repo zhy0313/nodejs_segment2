@@ -18,4 +18,15 @@ router.post('/login',(req,res)=>{
     UsersModel.login(req,res);
 });
 
+// 退出登录
+router.get('/logout',(req,res)=>{
+    req.session.destroy(()=>{
+        let data = {
+            code:200,
+            msg:'sucess'
+        };
+        res.send(data);
+    });
+});
+
 module.exports = router;
