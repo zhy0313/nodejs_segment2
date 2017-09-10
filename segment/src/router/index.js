@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import Layout from '@/pages/Layout';
-import MyIndex from '@/pages/user/MyIndex';
+import UserIndex from '@/pages/user/UserIndex';
 
 Vue.use(Router);
 
@@ -12,7 +12,7 @@ export default new Router({
             name: 'Layout',
             component: Layout,
             children:[
-                { path:'/myindex', component:MyIndex, name:'我的主页' }
+                { path:'/myindex', component:UserIndex, name:'我的主页' }
             ]
         }
     ]
