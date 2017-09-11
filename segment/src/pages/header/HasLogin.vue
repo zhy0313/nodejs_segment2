@@ -19,7 +19,7 @@
             <img src="../../assets/images/user.png" alt="" class="user pointer">
 
             <ul class="user-info pointer" v-show="showUserInfo">
-                <li class="info-item">我的主页</li>        
+                <li class="info-item" @click="goRouter('myindex')">我的主页</li>        
                 <li class="info-item" @click="logout">退出</li>        
             </ul>
         </div>
@@ -47,6 +47,12 @@ export default {
                 }
             })
         },
+
+        // 路由跳转
+        goRouter(val){
+            let path = `/${val}`
+            this.$router.push(path)
+        }
     }
 }
 </script>
