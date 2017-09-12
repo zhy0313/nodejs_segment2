@@ -2,14 +2,14 @@
   <div class="user-header">
 	  <div class="content">
 		  <div class="avator-wrapper">
-			<div class="avator">
+			<div class="avator pointer" @mouseover="showUpdAvator = true" @mouseleave="showUpdAvator = false">
 				<img :src="avator" alt="" >
-				<span class="upd-avator">上传头像</span>
+				<span class="upd-avator" v-show="showUpdAvator">上传头像</span>
 			</div>
 		  </div>
 		  <!-- 用户信息 -->
 		  <div class="user-info">
-			<h2>{{userName}}</h2>
+			<h2>{{userInfo.username}}-{{userInfo.mobile}}-{{userInfo.email}}</h2>
 			<div class="badge">
 				<span class="reputation">{{reputation}} 声望</span>
 			</div>
@@ -19,13 +19,31 @@
 </template>
 
 <script>
+import { GET_USER_LIST } from '@/api/api';
+
 export default {
 	data(){
 		return {
 			avator:require('@/assets/images/user.png'),
 			userName: 'a1',
-			reputation: 1
+			reputation: 1,
+			showUpdAvator: false,
+			userInfo:{
+				username: '',
+				mobile: '',
+				email: ''
+			}
 		}
+	},
+	methods:{
+		testSession(){
+			GET_USER_LIST().then(res=>{
+				console.log('testsession',res.data)
+			})
+		}
+	},
+	mounted(){
+		this.testSession();
 	}
 }
 </script>
@@ -100,7 +118,6 @@ export default {
 				// 声望
 				.reputation {
 					float: left;
-					display: inline-block;
 					width:70px;
 					height:29px;
 					line-height: 29px;
@@ -108,7 +125,7 @@ export default {
 					border-radius:29px;
 					border:1px solid @green;
 					background-color: #dff1d9;
-					color:@green;
+					color: @green;
 				}
 	
 			}

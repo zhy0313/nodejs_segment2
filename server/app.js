@@ -11,13 +11,12 @@ var users = require('./routes/users');
 
 var app = express();
 
-// app.set('trust proxy', 1); // trust first proxy it requires an https-enabled website
-// 使用session
+// 设置session
 app.use(session({
     secret: 'keyboard cat',
     resave: true,
     saveUninitialized: true,
-    cookie: { secure: true, maxAge: 5 * 60 * 1000 }
+    cookie: { maxAge: 10 * 60 * 1000 }
 }));
 
 // view engine setup

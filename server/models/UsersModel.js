@@ -1,9 +1,7 @@
 var mysql = require('mysql');
 var config = require('../db/config');
-var checkSession = require('./session/CheckSession'); 
 
 var pool = mysql.createPool(config.mysql);
-
 pool.on('connection', function (connection) {
     connection.query('SET SESSION auto_increment_increment=1');
 });
@@ -11,7 +9,6 @@ pool.on('connection', function (connection) {
 module.exports = {
     // 注册
     register(req,res){
-
         let addUserSql = 'insert into user (username,email,mobile,pwd) values(?,?,?,?)';
         
         let body = req.body;
@@ -96,7 +93,11 @@ module.exports = {
                 // 查询结果结果
                 if(rs.length > 0 ){
                     data.data = rs[0];
-                    req.session.sessionID = rs[0].username;
+
+                    // 设置session
+                    let sessionID =  rs[0].username;
+                    req.session.sessionID = sessionID;
+
                 }else {
                     data.code = 400;
                     data.msg = '用户名或密码错误';
@@ -107,7 +108,7 @@ module.exports = {
         });
     },
 
-    // 用户列表
+    // 查询用户列表
     getUserList(req,res){
         let getUserSql = ' select * from user';
         let params = [];
