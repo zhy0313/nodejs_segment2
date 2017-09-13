@@ -110,21 +110,23 @@ module.exports = {
 
     // 查询用户列表
     getUserList(req,res){
+
+    // =========测试debugger====================== 
         let a = 1;
         console.log(a);
         let b = 2;
         console.log(b);
-        let c = 3;
+        let c = [1,2,3];
         console.log(c);
-        let d = 4;
+        let d = function(){
+            return {
+                node: 'debugger'
+            }
+        };
         console.log(d);
-        
         let e = 5;
         console.log(e);
-
-
-
-
+        //==============测试debugger=====================    
 
 
         let getUserSql = ' select * from user';
