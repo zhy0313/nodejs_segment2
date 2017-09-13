@@ -116,6 +116,13 @@ module.exports = {
         console.log(b);
         let c = 3;
         console.log(c);
+        let d = 4;
+        console.log(d);
+        
+        let e = 5;
+        console.log(e);
+
+
 
 
 
