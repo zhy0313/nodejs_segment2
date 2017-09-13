@@ -127,8 +127,7 @@ module.exports = {
         let e = 5;
         console.log(e);
         
-        //==============测试debugger=====================    
-
+    //==============测试debugger=====================    
 
         let getUserSql = ' select * from user';
         let params = [];
