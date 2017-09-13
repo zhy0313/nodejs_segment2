@@ -31,6 +31,7 @@ router.get('/getlist', function (req, res) {
     let result = checkSession.check(req, res);
     if (result.code == 402) {
         res.send(result);
+        console.log(result);
         return;
     }
     UsersModel.getUserList(req,res);

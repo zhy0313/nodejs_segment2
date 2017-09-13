@@ -110,9 +110,19 @@ module.exports = {
 
     // 查询用户列表
     getUserList(req,res){
+        let a = 1;
+        console.log(a);
+        let b = 2;
+        console.log(b);
+        let c = 3;
+        console.log(c);
+
+
+
+
         let getUserSql = ' select * from user';
         let params = [];
-
+      
         pool.getConnection((err,conn)=>{
             if(err) throw err;
 
