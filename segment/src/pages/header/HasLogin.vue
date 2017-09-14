@@ -1,13 +1,13 @@
 <template>
     <div class="has-login clearfix">
         <div class="btn pointer">
-            <span class="btn-ask">{{navType}}</span>
+            <span class="btn-ask" @click="goRouter('/ask',0)">提问题</span>
             <span class="btn-arrow"   @mouseover="showSubNav = true" @mouseleave='showSubNav = false'>
                 <span class="arrow"></span>
             </span>
             <ul class="sub-nav-wrapper" v-show="showSubNav"  @mouseover="showSubNav = true" @mouseleave='showSubNav = false'>
-                <li class="sub-nav-item">提问题</li>
-                <li class="sub-nav-item">写头条</li>
+                <li class="sub-nav-item"  @click="goRouter('/ask',0)">提问题</li>
+                <li class="sub-nav-item" @click="goRouter('/ask',1)">写头条</li>
                 <li class="sub-nav-item">写文章</li>
                 <li class="sub-nav-item">记笔记</li>
             </ul>
@@ -19,7 +19,7 @@
             <img src="../../assets/images/user.png" alt="" class="user pointer">
 
             <ul class="user-info pointer" v-show="showUserInfo">
-                <li class="info-item" @click="goRouter('myindex')">我的主页</li>        
+                <li class="info-item" @click="goRouter('/myindex',1)">我的主页</li>        
                 <li class="info-item" @click="logout">退出</li>        
             </ul>
         </div>
@@ -33,7 +33,6 @@ export default {
         return {
             showUserInfo: false,
             showSubNav: false,
-            navType: '提问题'
         }
     },
     methods:{
@@ -49,9 +48,11 @@ export default {
         },
 
         // 路由跳转
-        goRouter(val){
-            let path = `/${val}`
+        goRouter(path,type){
             this.$router.push(path)
+
+            // 触发父组件changeWriteMode事件
+            this.$emit('changeWriteMode',type)
         }
     }
 }

@@ -1,19 +1,28 @@
 <template>
     <div class="nav-header">
         <div class="title-content clearfix">
-            <div class="logo pointer">segment<span class="green">fault</span></div>
-            <ul class="title-list">
-                <li class="title-item active pointer">问答</li>
-                <li class="title-item pointer">头条</li>
-                <li class="title-item pointer">专栏</li>
-                <li class="title-item pointer">讲堂</li>
-                <li class="title-item pointer">职位</li>
-                <li class="title-item pointer">活动</li>
+            <div class="logo pointer" @click="goRouter('/question',0)">segment<span class="green">fault</span></div>
+            
+            <ul class="title-list" v-if="writeTypeCode == -1">
+                <li class="title-item pointer" :class='{active: activeNav == 0}' @click="goRouter('/question',0)">问答</li>
+                <li class="title-item pointer" :class='{active: activeNav == 1}' @click="goRouter('/question',1)">头条</li>
+                <li class="title-item pointer" :class='{active: activeNav == 2}' @click="goRouter('/question',2)">专栏</li>
+                <li class="title-item pointer" :class='{active: activeNav == 3}' @click="goRouter('/question',3)">讲堂</li>
+                <li class="title-item pointer" :class='{active: activeNav == 4}' @click="goRouter('/question',4)">职位</li>
+                <li class="title-item pointer" :class='{active: activeNav == 5}' @click="goRouter('/question',5)">活动</li>
             </ul>
-            <div class="search-wrapper">
+
+            <div class="write-mode" v-else>
+                {{writeType}}
+            </div>
+
+            <div class="search-wrapper" v-show="writeTypeCode == -1">
                 <input type="text" placeholder="搜索问题或关键字" class="search-input" id='search'  v-expand>
                 <span class="iconfont icon-search pointer"></span>
             </div>
+
+            
+
             <!-- 登录/注册按钮 -->
             <div class="btn-wrapper" v-if="showLoginBtn">
                 <span class="login pointer" @click='login'>立即登录</span>
@@ -21,10 +30,11 @@
             </div>
             <!-- 已登录 -->
             <div class="haslogin-wrapper" v-else>
-                <has-login @hasLogout='hasLogout'></has-login>
+                <has-login @hasLogout='hasLogout' @changeWriteMode='changeWriteMode'></has-login>
             </div>
         </div>
-        <div class="sub-title-content clearfix">
+        <!-- 二级导航 -->
+        <div class="sub-title-content clearfix"  v-show="writeTypeCode == -1">
             <!-- 问答列表 -->
             <ul class="sub-title-list" v-if="showQueList">
                 <li class="sub-title-item pointer"  v-for="(item,index) in questionList" :key="index">{{item.label}}</li>
@@ -51,6 +61,9 @@ export default {
     },
     data(){
         return{
+            writeTypeCode:-1,
+            writeType: '提问', //类型
+            activeNav: 0, //headnav 激活状态
             showLogin:false,
             showLoginBtn:true,
             showQueList:true,
@@ -96,6 +109,31 @@ export default {
     //    } 
     },
     methods:{
+        // 改变写作类型
+        changeWriteMode(type){
+            console.log(type)
+            this.writeTypeCode = type
+            switch(type){
+                case 0:
+                this.writeType = '提问'
+                break;
+                case 1:
+                this.writeType = '写头条'
+                break;
+                default:
+                break;
+            }
+        },
+
+        // 跳转路由
+        goRouter(path,num){
+            // 重置写作类型
+            this.writeTypeCode = -1;
+
+            this.activeNav = num
+            this.$router.push({path:path})
+
+        },
         // 收起注册/登录框
         hide(){
             this.showLogin = false;
@@ -247,6 +285,14 @@ export default {
                     top:9px;
                     right: -20px;
                 }
+            }
+
+            // 提问/写头条..
+            .write-mode {
+                float: left;
+                margin-left: 25px;
+                margin-top: 25px;
+                font-size: 18px;
             }
 
             // 登录/注册按钮 已登录包裹层
