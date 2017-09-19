@@ -21,8 +21,6 @@
                 <span class="iconfont icon-search pointer"></span>
             </div>
 
-            
-
             <!-- 登录/注册按钮 -->
             <div class="btn-wrapper" v-if="showLoginBtn">
                 <span class="login pointer" @click='login'>立即登录</span>

@@ -3,8 +3,13 @@
 import Vue from 'vue';
 import App from './App';
 import router from './router';
-import store from './vuex/store'
+import store from './vuex/store';
 // import VeeValidate from 'vee-validate';
+
+// 富文本框
+import VueQuillEditor from 'vue-quill-editor';
+Vue.use(VueQuillEditor);
+
 
 // 表单验证
 import Vuelidate from 'vuelidate';

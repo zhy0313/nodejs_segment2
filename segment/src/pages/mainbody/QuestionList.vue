@@ -61,7 +61,7 @@ export default {
                     views: 3,
                     respondents:'lucy',
                     time:'2小时前',
-                    questionTitle: '一个元素，鼠标点击，一个元素，鼠标点击可以触发事件，一个可以触发事件可以触发事件可以触发事件元事件',
+                    questionTitle: '一个元素，鼠标点击，一个元素，鼠标事件',
                     types: [1,2]
                 }
             ]

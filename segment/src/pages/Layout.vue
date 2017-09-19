@@ -38,14 +38,6 @@ export default {
         text-align: center;
         font-size: 16px;
 
-        .top-line{
-            position: absolute;
-            top: 0;
-            left:0;
-            height: 4px;
-            width: 100%;
-            background-color: @green;
-        }
     }
 
 </style>
