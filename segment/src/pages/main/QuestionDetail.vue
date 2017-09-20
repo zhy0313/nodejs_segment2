@@ -1,12 +1,7 @@
 <template>
     <div class="question-detail">
-        <!-- <div v-html="questionDetail"></div> -->
-        <div class="rich-text-wrapper clearfix">
-            <quill-editor v-model="questionDetail" 
-                ref="myQuillEditor"
-                :options="editorOption">
-            </quill-editor>
-        </div>
+        <h1>用户:{{username}}</h1>
+        <div class="html ql-editor" v-html="questionDetail"></div>
     </div>
 </template>
 <script>
@@ -16,7 +11,8 @@ import { QUESTION_DETAIL } from '@/api/api'
 export default {
     data(){
         return {
-            questionDetail:"问题详情",
+            userId:'',
+            questionDetail:"", 
             q_id:0,
             content:"",
             editorOption: {
@@ -46,7 +42,8 @@ export default {
             }
             QUESTION_DETAIL(para).then(res=>{
                 console.log(res.data.data)
-                this.questionDetail = res.data.data
+                this.questionDetail = res.data.data.q_content
+                this.username = res.data.data.username
             })    
         }
     },
@@ -63,18 +60,13 @@ export default {
         width: 1116px;
         margin:29px auto 0;
         font-size: 14px;
-
-        // 内容
-        .rich-text-wrapper{
-            text-align: left;
-            height: 550px;
-            
-            // 内容区
-            .quill-editor {
-                height: 500px;
-            }
+        
+        // 富文本编辑器
+        .ql-editor{
+            border:1px solid #ddd;
         }
     }
+
 
 
 </style>

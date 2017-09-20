@@ -5,6 +5,12 @@ var checkSession = require('../session/CheckSession');
 
 // 提问
 router.post('/ask_question',(req,res)=>{
+    //验证session
+    let result = checkSession.check(req, res);
+    if (result.code == 402) {
+        res.send(result);
+        return;
+    }
     QuestionModel.askQuestion(req,res);
 });
 

@@ -74,7 +74,6 @@ module.exports = {
             };
 
             if(err){
-                console.log(err);
                 data.code = 401;
                 data.msg = err.message;
                 res.send(data);
@@ -95,7 +94,7 @@ module.exports = {
                     data.data = rs[0];
 
                     // 设置session
-                    let sessionID =  rs[0].username;
+                    let sessionID =  rs[0].uid;
                     req.session.sessionID = sessionID;
 
                 }else {

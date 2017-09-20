@@ -23,7 +23,7 @@ module.exports = {
         let title = body.title;
         let tag = body.tag;
         let content = body.content;
-
+        let user_id = req.session.sessionID;
         // 验证
         if(title == '' || tag == '' || content==''){
             data.code = 400;
@@ -32,8 +32,8 @@ module.exports = {
             return;
         }
         
-        let askSql = 'insert questions(q_id,q_title,q_tag,q_content) values(null,?,?,?)';
-        let param = [title,tag,content];
+        let askSql = 'insert questions(q_id,q_title,q_tag,q_content,user_id) values(null,?,?,?,?)';
+        let param = [title,tag,content,user_id];
       
         pool.getConnection((err,conn)=>{
             if(err){
@@ -98,7 +98,7 @@ module.exports = {
             data:''
         };
         
-        let queSql = 'select q_content from questions where q_id=?';
+        let queSql = 'select q.q_content,u.username from questions as q inner join user as u on q.user_id = u.uid where q_id=?';
         let param = req.query.q_id;
         pool.getConnection((err,conn)=>{
             if(err){
@@ -111,10 +111,15 @@ module.exports = {
                 if(err){
                     data.code = 400;
                     data.msg = err.message;
+                    res.send(data);
                     return;
                 }
-
+                let result = {
+                    q_content: rs[0].q_content.toString(),
+                    username: rs[0].username
+                };    
                 data.data = rs[0].q_content.toString();
+                data.data = result;
                 res.send(data);
             });
             conn.release();

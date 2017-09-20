@@ -28,12 +28,11 @@ router.get('/logout',(req,res)=>{
 // 查询用户列表
 router.get('/getlist', function (req, res) {
     //验证session
-    /* let result = checkSession.check(req, res);
+    let result = checkSession.check(req, res);
     if (result.code == 402) {
         res.send(result);
-        console.log(result);
         return;
-    } */
+    }
     UsersModel.getUserList(req,res);
 });
 module.exports = router;
