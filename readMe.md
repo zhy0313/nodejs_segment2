@@ -18,6 +18,7 @@
 
 ```mysql
 
+    // 用户表
     CREATE TABLE `user` (
         `uid` int(11) NOT NULL AUTO_INCREMENT COMMENT '用户id',
         `mobile` char(15) DEFAULT NULL,
@@ -32,4 +33,23 @@
         UNIQUE KEY `mobile_unique` (`mobile`) USING BTREE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+    // 问题表
+    create table questions(
+        q_id smallint unsigned primary key auto_increment,
+        q_title varchar(220) not null,
+        q_tag varchar(50) not null,
+        q_content longtext not null,
+        votes int not null,
+        views int unsigned,
+        answer int unsigned,
+        last_res_id int unsigned comment '最近回复的用户id',
+        create_time timestamp default current_timestamp,
+        user_id int not null unique
+    )engine=innodb defatlt charset=utf8;
+
+    // 标签表
+    create table tags(
+        t_id int unsigned primary key auto_increment,
+        t_name varchar(40) not null
+    )engine=innodb default charset = utf8;
 ```

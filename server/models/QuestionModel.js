@@ -58,6 +58,8 @@ module.exports = {
 
     /**
      * 获取问题列表
+     * todo
+     * 标签为数组
      */
     questionList(req,res){
         let data = {
@@ -65,7 +67,7 @@ module.exports = {
             msg: 'success'
         };
 
-        let queSql = 'select q_id,q_title questionTitle,t_name tagName,votes,answer,views,last_respondent lastRespondent from questions as q inner join tags as t on q.q_tag = t.t_id  order by create_time desc';
+        let queSql = 'SELECT q_id,q_title questionTitle,t_name tagName,votes,answer,views,u.username AS lastRespondent FROM questions AS q INNER JOIN tags as t ON t.t_id IN q.q_tag INNER JOIN user AS u ON q.last_res_id = u.uid ORDER BY create_time DESC';
 
         pool.getConnection((err,conn)=>{
             if(err){
