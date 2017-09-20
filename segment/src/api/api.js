@@ -15,6 +15,8 @@ export const LOGOUT = params =>{ return axios.get(`${base}/users/logout`, {param
 // 提交提问
 export const SUBMIT_QUESTION = params => { return axios.post(`${base}/question/ask_question`,qs.stringify(params));};
 
+// 问题列表
+export const QUESTION_LIST = params => {return axios.get(`${base}/question/question_list`, {params:params});};
 
 
 

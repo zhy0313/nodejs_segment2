@@ -15,14 +15,20 @@ module.exports = {
         };
 
         let body = req.body;
-        let title = body.title == '' ? null : body.title;
-        let tag = body.tag == '' ? null : body.tag;
-        let content = body.content == '' ? null : body.content;
+        let title = body.title;
+        let tag = body.tag;
+        let content = body.content;
 
-        let askSql = 'insert questions values(null,?,?,?)';
+        // 验证
+        if(title == '' || tag == '' || content==''){
+            data.code = 400;
+            data.msg = '请填写完整问题信息';
+            res.send(data);
+            return;
+        }
         
+        let askSql = 'insert questions values(null,?,?,?)';
         let param = [title,tag,content];
-
       
         pool.getConnection((err,conn)=>{
             if(err){
@@ -32,8 +38,7 @@ module.exports = {
                 return;
             }
 
-
-            conn.query(askSql,param,(err,rs)=>{
+            conn.query(askSql,param,(err)=>{
                 if(err){
                     data.code = 400;
                     data.msg = err.message;

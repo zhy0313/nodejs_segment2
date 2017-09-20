@@ -43,6 +43,8 @@
 </template>
 
 <script>
+import { QUESTION_LIST } from '@/api/api'
+
 export default {
     data(){
         return {

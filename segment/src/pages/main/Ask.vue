@@ -61,9 +61,12 @@
                     tag: this.tag,
                     content: this.content
                 }
-                console.log('submit',para)
+
+                // todo
+                // 表单验证 错误处理
                 SUBMIT_QUESTION(para).then((res)=>{
-                    console.log(res)
+                    console.log(res);
+                    // 成功后跳转到问答页
                     if(res.data.code == 200){
                         this.$router.push({path:'/question'})
                     }
@@ -124,7 +127,7 @@
         .btn-wrapper {
             height: 30px;
             line-height: 30px;
-            text-align: left;
+            text-align: right;
 
             .btn-submit {
                 display: inline-block;

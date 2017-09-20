@@ -2,8 +2,8 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import Layout from '@/pages/Layout';
 import UserIndex from '@/pages/user/UserIndex';
-import QuestionList from '@/pages/mainbody/QuestionList';
-import Ask from '@/pages/mainbody/Ask';
+import QuestionList from '@/pages/main/QuestionList';
+import Ask from '@/pages/main/Ask';
 
 Vue.use(Router);
 
