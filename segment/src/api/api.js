@@ -12,7 +12,14 @@ export const LOGIN = params =>{ return axios.post(`${base}/users/login`,qs.strin
 // 退出登录
 export const LOGOUT = params =>{ return axios.get(`${base}/users/logout`, {params:params});};
 
+// 提交提问
+export const SUBMIT_QUESTION = params => { return axios.post(`${base}/question/ask_question`,qs.stringify(params));};
+
+
+
+
 
 //===========================================================================
+
 // 获取用户列表
 export const GET_USER_LIST = params=>{ return axios.get(`${base}/users/getlist`,{params:params});};

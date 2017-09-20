@@ -1,25 +1,28 @@
 <template>
 <!-- 提问 -->
     <div class="ask">
-        <input type="text" class="title" placeholder="标题: 一句话说明问题">
-        <input type="text" class="tag" placeholder="标签">
-        <div class="rich-text-wrapper">
+        <input type="text" class="title" placeholder="标题: 一句话说明问题" v-model="title">
+        <input type="text" class="tag" placeholder="标签" v-model="tag">
+        <div class="rich-text-wrapper clearfix">
             <quill-editor v-model="content" 
                 ref="myQuillEditor"
                 placeholder="表述你的问题"
                 :options="editorOption"
+                
                 @blur="onEditorBlur($event)"
                 @focus="onEditorFocus($event)"
                 @ready="onEditorReady($event)">
             </quill-editor>
         </div>
+        <div class="btn-wrapper">
+            <input type="button" value="提交问题" @click="submit" class="btn-submit">
+        </div>
     </div>
 </template>
 
 <script>
-    import Quill from 'quill'
     import { quillEditor } from 'vue-quill-editor'
-
+    import { SUBMIT_QUESTION } from '@/api/api'
     export default  {
         components: {
             quillEditor
@@ -27,6 +30,8 @@
 
         data(){
             return {
+                title:'',
+                tag:'',
                 content:"",
                 editorOption: {
                     // some quill options
@@ -42,13 +47,30 @@
                             maxStack: 50,
                             userOnly: false
                         }
-                        
-                    }
+                    },
+                    placeholder:' '
                 }
             }
         },
 
         methods:{
+            // 提交
+            submit(){
+                let para={
+                    title: this.title,
+                    tag: this.tag,
+                    content: this.content
+                }
+                console.log('submit',para)
+                SUBMIT_QUESTION(para).then((res)=>{
+                    console.log(res)
+                    if(res.data.code == 200){
+                        this.$router.push({path:'/question'})
+                    }
+                })
+            },
+
+
             onEditorBlur(e){
 
             },
@@ -83,17 +105,37 @@
         .title {
             font-size: 18px;
             padding:10px 0;
-            border:1px solid #3b99fc; 
-            box-shadow:0 0 3px 0 #3b99fc
+            // border:1px solid #3b99fc; 
+            // box-shadow:0 0 3px 0 #3b99fc
         }
 
         // 内容
         .rich-text-wrapper{
             text-align: left;
+            height: 550px;
             
             // 内容区
             .quill-editor {
                 height: 500px;
+            }
+        }
+
+        // 提交按钮
+        .btn-wrapper {
+            height: 30px;
+            line-height: 30px;
+            text-align: left;
+
+            .btn-submit {
+                display: inline-block;
+                width:80px;
+                height: 34px;
+                background-color:@green;
+                border:none;
+                color:#fff;
+                border-radius: 4px;
+                text-align: center;
+                letter-spacing: 1px;
             }
         }
     }
