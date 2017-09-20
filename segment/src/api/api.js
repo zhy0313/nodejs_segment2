@@ -18,7 +18,8 @@ export const SUBMIT_QUESTION = params => { return axios.post(`${base}/question/a
 // 问题列表
 export const QUESTION_LIST = params => {return axios.get(`${base}/question/question_list`, {params:params});};
 
-
+// 获取问题详情
+export const QUESTION_DETAIL = params => { return axios.get(`${base}/question/question_detail`,{params:params});};
 
 
 //===========================================================================

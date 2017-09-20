@@ -6,7 +6,6 @@
         <div class="rich-text-wrapper clearfix">
             <quill-editor v-model="content" 
                 ref="myQuillEditor"
-                placeholder="表述你的问题"
                 :options="editorOption"
                 
                 @blur="onEditorBlur($event)"

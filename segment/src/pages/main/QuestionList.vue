@@ -24,14 +24,15 @@
                <!-- 问题 -->
                <div class="question-wrapper">
                    <div class="respondents">
-                       <a href="#">{{question.respondents}}</a>
+                       <a href="#">{{question.lastRespondents}}</a>
                        <a href="#">{{question.time}}</a>
                    </div>
                    <div class="question-title">
                        <span class="title">
-                           <a href="#">{{question.questionTitle}}</a>
+                           <a href="javascript:;" @click='goDetail(question.q_id)'>{{question.questionTitle}}</a>
                             <ul class="type" >
-                                <li class="type-item pointer" v-for=" (type,index) in question.types " :key="index">{{type | formateType}}</li>
+                                <!-- <li class="type-item pointer" v-for=" (type,index) in question.types " :key="index">{{type}}</li> -->
+                                <li class="type-item pointer">{{question.tagName}}</li>
                             </ul>
                        </span>
                       
@@ -56,17 +57,7 @@ export default {
                 { item:'最新动态', type:'2'},
                 { item:'付费问答', type:'3'},
             ],
-            questionList:[  //最新问答列表
-                {
-                    votes: 1,
-                    answer: 2,
-                    views: 3,
-                    respondents:'lucy',
-                    time:'2小时前',
-                    questionTitle: '一个元素，鼠标点击，一个元素，鼠标事件',
-                    types: [1,2]
-                }
-            ]
+            questionList:[] //最新问答列表
         }
     },
     filters:{
@@ -84,6 +75,23 @@ export default {
             }
             return type
         }
+    },
+    methods:{
+        // 获取问题列表
+        getQueList(){
+            QUESTION_LIST().then(res=>{
+                this.questionList = res.data.data
+            })
+        },
+        
+        // 跳转问题详情页
+        goDetail(val){
+            let path = `/q/${val}`
+            this.$router.push({path})
+        }
+    },
+    mounted(){
+        this.getQueList()
     }
 }
 </script>
