@@ -3,6 +3,7 @@
         <div class="title-content clearfix">
             <div class="logo pointer" @click="goRouter('/question',0)">segment<span class="green">fault</span></div>
             
+            <!-- 一级导航 -->
             <ul class="title-list" v-if="writeTypeCode == -1">
                 <li class="title-item pointer" :class='{active: activeNav == 0}' @click="goRouter('/question',0)">问答</li>
                 <li class="title-item pointer" :class='{active: activeNav == 1}' @click="goRouter('/question',1)">头条</li>
@@ -12,6 +13,7 @@
                 <li class="title-item pointer" :class='{active: activeNav == 5}' @click="goRouter('/question',5)">活动</li>
             </ul>
 
+            <!-- 一级导航 -->
             <div class="write-mode" v-else>
                 {{writeType}}
             </div>
@@ -59,8 +61,8 @@ export default {
     },
     data(){
         return{
-            writeTypeCode:-1,
-            writeType: '提问', //类型
+            writeTypeCode:-1,   // 一级导航类型
+            writeType: '提问', //写作类型
             activeNav: 0, //headnav 激活状态
             showLogin:false,
             showLoginBtn:true,
@@ -161,7 +163,17 @@ export default {
                 this.showLoginBtn = true
             }
         },
-        
+        // 检测一级导航状态
+        // todo watch路由跳转
+        checkNavHeader(){
+            let path = this.$route.path
+            console.log(this.$route)
+            // || path == '/myindex'
+            // if(path != '/ask' ){
+            //     this.writeTypeCode = -1
+            //     console.log('aa')
+            // }
+        }
     },
 
     directives: {
@@ -189,6 +201,9 @@ export default {
     created(){
         // 检测登录
         this.checkLogin();
+
+        // 检测一级导航
+        this.checkNavHeader();
     }
 }
 </script>

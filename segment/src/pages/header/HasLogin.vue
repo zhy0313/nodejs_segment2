@@ -1,10 +1,12 @@
 <template>
+    <!-- 已登录 -->
     <div class="has-login clearfix">
         <div class="btn pointer">
             <span class="btn-ask" @click="goRouter('/ask',0)">提问题</span>
             <span class="btn-arrow"   @mouseover="showSubNav = true" @mouseleave='showSubNav = false'>
                 <span class="arrow"></span>
             </span>
+            <!-- 提问-下拉菜单 -->
             <ul class="sub-nav-wrapper" v-show="showSubNav"  @mouseover="showSubNav = true" @mouseleave='showSubNav = false'>
                 <li class="sub-nav-item"  @click="goRouter('/ask',0)">提问题</li>
                 <li class="sub-nav-item" @click="goRouter('/ask',1)">写头条</li>
