@@ -67,7 +67,8 @@ module.exports = {
             msg: 'success'
         };
 
-        let queSql = 'SELECT q_id,q_title questionTitle,t_name tagName,votes,answer,views,u.username AS lastRespondent FROM questions AS q INNER JOIN tags as t ON t.t_id IN q.q_tag INNER JOIN user AS u ON q.last_res_id = u.uid ORDER BY create_time DESC';
+        // let tagSql = 'select t_id from questions';
+        let queSql = 'SELECT q_id,q_title questionTitle,t_name tagName,votes,answer,views,u.username AS lastRespondent FROM questions AS q INNER JOIN tags as t ON t.t_id = q.q_tag INNER JOIN user AS u ON q.user_id = u.uid ORDER BY q.create_time DESC';
 
         pool.getConnection((err,conn)=>{
             if(err){

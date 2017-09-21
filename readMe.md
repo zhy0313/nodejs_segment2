@@ -39,13 +39,13 @@
         q_title varchar(220) not null,
         q_tag varchar(50) not null,
         q_content longtext not null,
-        votes int not null,
-        views int unsigned,
-        answer int unsigned,
+        votes int not null default 0,
+        views int unsigned not null default 0,
+        answer int unsigned not null default 0,
         last_res_id int unsigned comment '最近回复的用户id',
         create_time timestamp default current_timestamp,
-        user_id int not null unique
-    )engine=innodb defatlt charset=utf8;
+        user_id int not null
+    )engine=innodb default charset=utf8;
 
     // 标签表
     create table tags(
