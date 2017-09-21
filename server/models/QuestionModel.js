@@ -67,8 +67,7 @@ module.exports = {
             msg: 'success'
         };
 
-        // let tagSql = 'select t_id from questions';
-        let queSql = 'SELECT q_id,q_title questionTitle,t_name tagName,votes,answer,views,u.username AS lastRespondent FROM questions AS q INNER JOIN tags as t ON t.t_id = q.q_tag INNER JOIN user AS u ON q.user_id = u.uid ORDER BY q.create_time DESC';
+        let queSql = 'SELECT q_id,q_title questionTitle,q_tag tagName,votes,answer,views,u.username AS lastRespondent FROM questions AS q INNER JOIN user AS u ON q.user_id = u.uid ORDER BY q.create_time DESC';
 
         pool.getConnection((err,conn)=>{
             if(err){
@@ -84,6 +83,10 @@ module.exports = {
                     res.send(data);
                     return;
                 }
+                // 转换tagName
+                rs.forEach((e)=>{
+                    e.tagName = e.tagName.split(',');
+                });
                 data.data = rs;
                 res.send(data);
             });

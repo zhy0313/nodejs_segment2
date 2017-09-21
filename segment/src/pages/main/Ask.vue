@@ -1,13 +1,22 @@
 <template>
 <!-- 提问 -->
-    <div class="ask">
-        <input type="text" class="title" placeholder="标题: 一句话说明问题" v-model="title">
-        <input type="text" class="tag" placeholder="标签" v-model="tag">
+    <div class="ask"  @click='showChoseTags = false'>
+        <input type="text" class="title" placeholder="标题: 一句话说明问题" v-model.trim="title">
+        <div class="tag-wrapper" @click.stop="showChoseTags = true">
+            <input type="text" class="tag" placeholder="标签" v-model="tag">
+            <div class="tag-select-wrapper" v-show="showChoseTags">
+                <ul class="tag-classify">
+                    <li class="classify-item pointer" v-for="(item,index) in tagClassification" :class="{ active: index==classifyActive }" :key="index" @click.stop="choseClassify(item,index)">{{item.classify}}</li>
+                </ul>
+                <ul class="tag-list">
+                    <li class="list-item pointer" v-for="(item,index) in languageItems" :key="index" @click.stop="choseItem(item,index)">{{item.item}}</li>
+                </ul>
+            </div>
+        </div>
         <div class="rich-text-wrapper clearfix">
             <quill-editor v-model="content" 
                 ref="myQuillEditor"
                 :options="editorOption"
-                
                 @blur="onEditorBlur($event)"
                 @focus="onEditorFocus($event)"
                 @ready="onEditorReady($event)">
@@ -29,8 +38,38 @@
 
         data(){
             return {
+                showChoseTags: false,
+                classifyActive: -1,
+                listItemActive: -1,
+                tagClassification: [
+                    {id:1, classify:'开发语言'},
+                    {id:2, classify:'平台框架'},
+                    {id:4, classify:'其他'}
+                ],
+                languageItems: [
+                    { id:1,item:'JavaScript' },
+                    { id:2,item:'php' },
+                    { id:3,item:'css' },
+                    { id:3,item:'html' },
+                    { id:3,item:'java' },
+                    { id:3,item:'python' },
+                    { id:3,item:'c++' }
+                ],
+                paltformItems:[
+                    { id:1, item: 'laravel' },
+                    { id:2, item: 'vue' },
+                    { id:3, item: 'express' },
+                    { id:4, item: 'react' }
+                ],
+                others: [
+                    { id:1, item: 'html5' },
+                    { id:2, item: 'mysql' },
+                    { id:3, item: 'mongodb' },
+                    { id:4, item: 'redis' }
+                ], 
                 title:'',
                 tag:'',
+                tags:[],
                 content:"",
                 editorOption: {
                     // some quill options
@@ -53,6 +92,28 @@
         },
 
         methods:{
+
+            // 选择分类
+            choseClassify(item,index){
+
+            },
+
+            // 选择标签
+            choseItem(item,index){
+                if(this.tags.length !== 0){
+
+                    for(let i = 0; i<this.tags.length;i++){
+                        if(item.item == this.tags[i]){
+                            return
+                        }
+                    }
+                    this.tags.push(item.item);
+                }else {
+                    this.tags.push(item.item);
+                }
+                this.tag = this.tags.join(','); 
+            },
+
             // 提交
             submit(){
                 let para={
@@ -91,6 +152,65 @@
         width: 1116px;
         margin:0 auto;
 
+        // 标签包裹层
+        .tag-wrapper {
+            position: relative;
+
+            // 标签选择
+            .tag-select-wrapper {
+                position: absolute;
+                left: 0;
+                top:32px;
+                width: 320px;
+                height: 160px;
+                padding:15px;
+                border:1px solid #ddd;
+                background-color: #fff;
+                z-index: 2;
+                box-shadow: 0 0 20px rgba(100,100,100,0.3);
+                font-size: 12px;
+                    text-align: left;
+                
+
+                // 标签分类
+                .tag-classify {
+                    .classify-item {
+                        display: inline-block;
+                        margin: 5px;
+                        padding: 5px 10px;
+                        border-radius:3px;
+                        color:#666;
+
+                        &:hover {
+                            background-color: #eee;
+                        }
+                        &.active {
+                            color:#fff;
+                            background-color:@green;
+                        }
+                    }
+                }
+
+                // 标签列表
+                .tag-list {
+                    margin-top: 10px;
+                    .list-item {
+                        display: inline-block;
+                        margin: 5px;
+                        padding: 5px 10px;
+                        border-radius:1px;
+                        background-color: #ebf5f3;
+                        color:@green;
+    
+                        &:hover {
+                            background-color: @green;
+                            color: #fff;
+                        }
+                    }
+                }
+            }
+        }
+
         // 标题/标签
         .title,.tag {
             display: block;
@@ -110,6 +230,8 @@
             // border:1px solid #3b99fc; 
             // box-shadow:0 0 3px 0 #3b99fc
         }
+
+        
 
         // 内容
         .rich-text-wrapper{

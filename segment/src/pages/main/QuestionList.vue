@@ -31,8 +31,7 @@
                        <span class="title">
                            <a href="javascript:;" @click='goDetail(question.q_id)'>{{question.questionTitle}}</a>
                             <ul class="type" >
-                                <!-- <li class="type-item pointer" v-for=" (type,index) in question.types " :key="index">{{type}}</li> -->
-                                <li class="type-item pointer">{{question.tagName}}</li>
+                                <li class="type-item pointer" v-for=" (type,index) in question.tagName " :key="index">{{type}}</li>
                             </ul>
                        </span>
                       
