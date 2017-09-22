@@ -5,7 +5,8 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
     state:{
-        hasLogin:false
+        hasLogin:false,
+        writeTypeCode: -1 //一级导航
     },
 
     mutations:{
@@ -20,7 +21,10 @@ export default new Vuex.Store({
             }
         },
 
-
+        // 更新一级导航
+        updateWriteTypeCode(state,payload){
+            state.writeTypeCode = payload;
+        }
     }
 });
 

@@ -61,7 +61,7 @@ export default {
     },
     data(){
         return{
-            writeTypeCode:-1,   // 一级导航类型
+            // writeTypeCode:-1,   // 一级导航类型
             writeType: '提问', //写作类型
             activeNav: 0, //headnav 激活状态
             showLogin:false,
@@ -107,12 +107,25 @@ export default {
     //    showLoginBtn(){
     //        return this.$store.commit('checkLogin')
     //    } 
+        // writeTypeCode(){
+        //     return this.$store.state.writeTypeCode
+        // },
+
+        writeTypeCode:{
+            get: function () {
+             return  this.$store.state.writeTypeCode
+            },
+            // setter
+            set: function (newValue) {
+                this.$store.state.writeTypeCode
+            }
+        }
     },
     methods:{
         // 改变写作类型
         changeWriteMode(type){
-            console.log(type)
             this.writeTypeCode = type
+            this.$store.commit('updateWriteTypeCode',type)
             switch(type){
                 case 0:
                 this.writeType = '提问'
@@ -132,6 +145,8 @@ export default {
 
             this.activeNav = num
             this.$router.push({path:path})
+
+            
 
         },
         // 收起注册/登录框
@@ -165,9 +180,10 @@ export default {
         },
         // 检测一级导航状态
         // todo watch路由跳转
+        
         checkNavHeader(){
             let path = this.$route.path
-            console.log(this.$route)
+            // console.log(this.$route)
             // || path == '/myindex'
             // if(path != '/ask' ){
             //     this.writeTypeCode = -1
@@ -204,6 +220,8 @@ export default {
 
         // 检测一级导航
         this.checkNavHeader();
+
+        console.log(this.$store.state.writeTypeCode)
     }
 }
 </script>
