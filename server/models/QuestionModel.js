@@ -104,7 +104,7 @@ module.exports = {
             data:''
         };
         
-        let queSql = 'select q.q_content,u.username from questions as q inner join user as u on q.user_id = u.uid where q_id=?';
+        let queSql = 'select q.q_title as title, q.q_content as content,u.username, q.q_tag as tags, q.create_time, q.last_res_time,q.last_res_id from questions as q inner join user as u on q.user_id = u.uid where q_id=?';
         let param = req.query.q_id;
         pool.getConnection((err,conn)=>{
             if(err){
@@ -120,11 +120,9 @@ module.exports = {
                     res.send(data);
                     return;
                 }
-                let result = {
-                    q_content: rs[0].q_content.toString(),
-                    username: rs[0].username
-                };    
-                data.data = rs[0].q_content.toString();
+                
+                let result = rs[0];
+                result.content = result.content.toString(); 
                 data.data = result;
                 res.send(data);
             });

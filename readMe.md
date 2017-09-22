@@ -65,7 +65,8 @@
         answer int unsigned not null default 0,
         last_res_id int unsigned comment '最近回复的用户id',
         create_time timestamp default current_timestamp,
-        user_id int not null
+        user_id int not null,
+        last_res_time timestamp
     )engine=innodb default charset=utf8;
    
 ```

@@ -8,7 +8,7 @@
                     <li class="tag-item" v-for="(item,index) in tags" :key='index'>{{item}}</li>
                 </ul>
                 <span class="user">{{username}}</span>
-                <span class="time">{{time}}提问</span>
+                <span class="time">{{time}}前提问</span>
             </div>
         </div>
         <div class="html ql-editor" v-html="questionDetail"></div>
@@ -21,7 +21,7 @@ import { QUESTION_DETAIL } from '@/api/api'
 export default {
     data(){
         return {
-            questionTitle:'问题标题',
+            questionTitle:'',
             username:'',
             time: '5h前',
             tags:['html','css'],
@@ -55,8 +55,33 @@ export default {
             }
             QUESTION_DETAIL(para).then(res=>{
                 console.log(res.data)
-                this.questionDetail = res.data.data.q_content
-                this.username = res.data.data.username
+                let data  = res.data
+                if(data.code === 200){
+                    this.questionTitle = data.data.title
+                    this.questionDetail = data.data.content
+                    this.username = data.data.username
+                    this.tags = data.data.tags.split(',')
+                    // 计算时间
+                    let create_time = new Date(data.data.create_time);
+                    let now = new Date();
+                    let sec = (now - create_time)/1000;    // 转换为s
+                    let min = sec/60;
+                    let hour = min/60;
+                    let day = hour/24
+
+                    if(Math.round(min) < 1){
+                        this.time = Math.round(sec)+'秒'
+                    }
+                    else if(Math.round(hour) < 1){
+                        this.time = Math.round(min) + '分钟'
+                    }
+                    else if(Math.round(day)< 1){
+                        this.time = Math.round(hour) + '小时'
+                    }
+                    else {
+                        this.time = Math.round(day) + '天'
+                    }
+                }
             })    
         }
     },
@@ -104,8 +129,8 @@ export default {
 
             // 标签/用户
             .tag-user {
-                font-size: 16px;
-                margin: 10px 0 20px;
+                font-size: 12px;
+                margin: 15px 0 20px;
                 .tag {
                     display: inline-block;
                     .tag-item {
@@ -121,10 +146,11 @@ export default {
                     color: @green;
                     font-weight: 600;
                     margin:0 10px;
+                    font-size: 16px;
                 }
 
                 .time {
-                    color:#ccc;
+                    color:#999;
                 }
 
             }
