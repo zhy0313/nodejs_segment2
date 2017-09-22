@@ -1,7 +1,7 @@
 ## express+mysql+vue 前后端分离 仿segment论坛
 
 ### segment(前端)
-- vue + vue-router + vuex + less   
+- vue + vue-router + vuex + axios + less   
 	```bash
     cd segment  
     npm i
@@ -11,7 +11,7 @@
 
 
 ### server(服务端)
-- express+mysql
+- express + mysql
 	```bash
     cd server
     npm i
