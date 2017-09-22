@@ -1,21 +1,42 @@
-# express+vue+mysql 仿segment论坛
+## express+mysql+vue 前后端分离 仿segment论坛
 
-### segment
+### segment(前端)
 - vue + vue-router + vuex + less   
+	```bash
+    cd segment  
+    npm i
+    npm run dev
 
-### server
+	```		
+
+
+### server(服务端)
 - express+mysql
+	```bash
+    cd server
+    npm i
+    npm start
 
-- #### API error code
+	```
+- mysql config
+	```js
+	mysql: {
+        'host': 'localhost',
+        'user': 'root',
+        'password': '',
+        'database': 'segment2',
+        'port': '3306'
+    }
+	```	
+- API error code
     - 200 success
     - 400 error  
     - 401 连接错误  
     - 402 登录过期
 
+
+
 ### mysql tables
-
-- user
-
 ```mysql
 
     // 用户表
@@ -46,10 +67,5 @@
         create_time timestamp default current_timestamp,
         user_id int not null
     )engine=innodb default charset=utf8;
-
-    // 标签表
-    create table tags(
-        t_id int unsigned primary key auto_increment,
-        t_name varchar(40) not null
-    )engine=innodb default charset = utf8;
+   
 ```
