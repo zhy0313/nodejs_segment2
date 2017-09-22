@@ -104,18 +104,11 @@ export default {
         }
     },
     computed:{
-    //    showLoginBtn(){
-    //        return this.$store.commit('checkLogin')
-    //    } 
-        // writeTypeCode(){
-        //     return this.$store.state.writeTypeCode
-        // },
-
+        // 一级导航状态   
         writeTypeCode:{
             get: function () {
-             return  this.$store.state.writeTypeCode
+                return  this.$store.state.writeTypeCode
             },
-            // setter
             set: function (newValue) {
                 this.$store.state.writeTypeCode
             }
@@ -177,18 +170,6 @@ export default {
             }else {
                 this.showLoginBtn = true
             }
-        },
-        // 检测一级导航状态
-        // todo watch路由跳转
-        
-        checkNavHeader(){
-            let path = this.$route.path
-            // console.log(this.$route)
-            // || path == '/myindex'
-            // if(path != '/ask' ){
-            //     this.writeTypeCode = -1
-            //     console.log('aa')
-            // }
         }
     },
 
@@ -213,15 +194,14 @@ export default {
         }
     },  
    
+    mounted(){
+        //  console.log('header',this.writeTypeCode)
+    },
 
     created(){
         // 检测登录
         this.checkLogin();
 
-        // 检测一级导航
-        this.checkNavHeader();
-
-        console.log(this.$store.state.writeTypeCode)
     }
 }
 </script>

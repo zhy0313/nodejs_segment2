@@ -10,6 +10,11 @@ export default new Vuex.Store({
     },
 
     mutations:{
+        // 还原state
+        resetState(state,payload){
+            state.writeTypeCode = payload.writeTypeCode;
+        },
+
         // 检测登录
         checkLogin(state){
             if(sessionStorage.getItem('segUser')){
@@ -24,6 +29,8 @@ export default new Vuex.Store({
         // 更新一级导航
         updateWriteTypeCode(state,payload){
             state.writeTypeCode = payload;
+            let data = JSON.stringify(state);
+            sessionStorage.setItem('segment_state',data);
         }
     }
 });

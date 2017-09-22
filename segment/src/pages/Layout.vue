@@ -21,6 +21,18 @@ export default {
         return {
 
         }
+    },
+
+    methods:{
+        // 刷新后还原vuex
+        updateVuex(){
+            let state = JSON.parse(sessionStorage.getItem('segment_state'));
+            this.$store.commit('resetState',state)
+        }
+    },
+
+    created(){
+       this.updateVuex()
     }
     
 }
