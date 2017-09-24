@@ -31,7 +31,7 @@
                     <div class="notice"  v-if="validate.regEmail">{{validate.emailMsg}}</div>
                 </div>   
 
-                <label for="pwd" class="pwd">密码<input type="password" id="pwd" placeholder="不少于6位" v-model.trim="register.pwd"></label>
+                <label for="pwd" class="pwd">密码<input type="password" id="pwd" placeholder="不少于6位" v-model.trim="register.pwd" @keydown.enter='registerHandler'></label>
                 <div class="notice" v-if='validate.regPwd'>密码不少于6位</div>
                 <div class="agreement-wrapper clearfix">
                     <div class="agreement">同意并接受<a class="contract" href='#'>《服务条款》</a></div>
@@ -49,7 +49,7 @@
                     <label for="pwd" class="pwd">密码</label>
                     <span class="foget-pwd pointer">忘记密码</span>
                 </div>
-                <input type="password" placeholder="密码" v-model="login.pwd">
+                <input type="password" placeholder="密码" v-model="login.pwd" @keyup.enter="loginHandler">
                 <div class="notice" v-show="validate.loginPwd">{{validate.loginPwdMsg}}</div>
                 <div class="login-wrapper">
                     <label> <input type="checkbox" v-model="rememberPwd" class="remember-status">记住登录状态</label>

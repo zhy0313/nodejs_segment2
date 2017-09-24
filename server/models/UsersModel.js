@@ -1,4 +1,5 @@
 var mysql = require('mysql');
+var async = require('async');
 var config = require('../db/config');
 
 var pool = mysql.createPool(config.mysql);
@@ -10,11 +11,13 @@ module.exports = {
     // 注册
     register(req,res){
         let addUserSql = 'insert into user (username,email,mobile,pwd) values(?,?,?,?)';
-        
+        let querySql  = 'select uid from user where username=?';
+
         let body = req.body;
         let email = body.email == '' ? null : body.email;       // 为空则存储null
         let mobile = body.mobile == '' ? null : body.mobile;    // 为空则存储null
         let params = [body.name,email,mobile,body.pwd];
+        let queryParams = [body.name];
 
         pool.getConnection((err,conn)=>{
             let data = {
@@ -22,37 +25,63 @@ module.exports = {
                 msg: ''
             };
             if(err) {
-                console.log(`连接错误:${err}`);
                 data.code = 400;
                 data.msg = '连接错误,请稍后再试';
                 res.send(data);
                 return;
             }
 
-            conn.query(addUserSql,params,(err,rs)=>{
-                if(err){
-                    console.log(`写入异常:${err}`);
-                    data.code = 400;
-                    let msg = err.message;
-                    if(msg.indexOf('email_unique') > -1){
-                        data.msg = '邮箱已被注册';
-                        data.errType = 'email';
-                    }else if(msg.indexOf('username_unique') > -1){
-                        data.msg = '用户名已被注册';
-                        data.errType = 'name';
-                    }else if(msg.indexOf('mobile_unique')){
-                        data.msg = '手机已被注册';
-                        data.errType = 'mobile';
-                    } else {
-                        data.msg = msg;
-                    }
-                    res.send(data);
-                    return;
+            async.series([
+                // 注册
+                (callback)=>{
+                    conn.query(addUserSql,params,(err)=>{
+                        if(err){
+                            console.log(`写入异常:${err}`);
+                            data.code = 400;
+                            let msg = err.message;
+                            if(msg.indexOf('email_unique') > -1){
+                                data.msg = '邮箱已被注册';
+                                data.errType = 'email';
+                            }else if(msg.indexOf('username_unique') > -1){
+                                data.msg = '用户名已被注册';
+                                data.errType = 'name';
+                            }else if(msg.indexOf('mobile_unique')){
+                                data.msg = '手机已被注册';
+                                data.errType = 'mobile';
+                            } else {
+                                data.msg = msg;
+                            }
+                            res.send(data);
+                            return;
+                        }
+                        
+                        // todo/拿到user_id 放入session
+                        // req.session.sessionID = body.name;
+                        // data.msg = 'success';
+                        // res.send(data);
+                    });
+                    callback(null,'register');
+                },
+
+                // 读取新用户的uid
+                (callback)=>{
+                    let rs;
+                    conn.query(querySql,queryParams,(err,rs)=>{
+                        if(err){
+                            data.code = 400;
+                            data.msg = err.message;
+                            res.send(data);
+                            return;
+                        }
+                        rs = rs;
+                    });
+                    callback(null,rs);
                 }
-                req.session.sessionID = body.name;
-                data.msg = 'success';
-                res.send(data);
+            ],(err,result)=>{
+                console.log(result);
             });
+
+            
             conn.release();
         });
     },
