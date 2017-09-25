@@ -1,4 +1,5 @@
 var mysql = require('mysql');
+var async = require('async');
 var config = require('../db/config');
 
 var pool = mysql.createPool(config.mysql);
@@ -58,14 +59,25 @@ module.exports = {
 
     /**
      * 获取问题列表
+     * page 当前页
+     * pageSize 分页大小
      */
     questionList(req,res){
         let data = {
             code:200,
-            msg: 'success'
+            msg: 'success',
+            data:''
         };
 
-        let queSql = 'SELECT q_id,q_title questionTitle,q_tag tagName,votes,answer,views,u.username AS lastRespondent FROM questions AS q INNER JOIN user AS u ON q.user_id = u.uid ORDER BY q.create_time DESC';
+        let page = req.query.page ;
+        let pageSize = req.query.pageSize;
+        
+        let params = [(page-1)*pageSize, parseInt(pageSize)];     // 注意字符串转成数字,否则sql无法报错
+        // 查询当前页
+        let queSql = 'SELECT q_id,q_title questionTitle,q_tag tagName,votes,answer,views,u.username AS lastRespondent FROM questions AS q INNER JOIN user AS u ON q.user_id = u.uid ORDER BY q.create_time DESC limit ?,?';
+
+        // 查询问题总条数
+        let countSql = 'select count(*) as total from questions';
 
         pool.getConnection((err,conn)=>{
             if(err){
@@ -74,20 +86,42 @@ module.exports = {
                 res.send(data);
                 return;
             }
-            conn.query(queSql,[],(err,rs)=>{
+
+            async.series([
+                // 查询问题总条数
+                function(callback){
+                    conn.query(countSql,[],(err,rs)=>{
+                        let total = rs[0].total;
+                        callback(null,total);
+                    });
+                },
+
+                // 查询当前页
+                function(callback){
+                    conn.query(queSql,params,(err,rs)=>{
+                        // 转换tagName
+                        if(rs != undefined && rs.length>0){
+                            rs.forEach((e)=>{
+                                e.tagName = e.tagName.split(',');
+                            });
+                            callback(null,rs);
+                        }
+                    });
+                }
+            ],
+            function(err,result){
                 if(err){
                     data.code = 400;
                     data.msg = err.message;
                     res.send(data);
                     return;
                 }
-                // 转换tagName
-                rs.forEach((e)=>{
-                    e.tagName = e.tagName.split(',');
-                });
-                data.data = rs;
+                
+                data.total = result[0];
+                data.data = result[1];
                 res.send(data);
             });
+
             conn.release();
         });
     },

@@ -4,7 +4,7 @@
     <div class="ask" >
         <input type="text" class="title" placeholder="标题: 一句话说明问题" v-model.trim="title">
         <div class="tag-wrapper" @click.stop="showChoseTags = true">
-            <input type="text" class="tag" placeholder="标签">
+            <input type="text" class="tag" placeholder="标签" @focus="showChoseTags = true">
             <ul class="chosen-tags">
                 <li class="tag-item" v-for="(tag,index) in tags" :key="index">{{tag}}<span class="close pointer" @click="delTag(tag,index)">×</span></li>
             </ul>

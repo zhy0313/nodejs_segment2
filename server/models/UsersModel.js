@@ -34,6 +34,7 @@ module.exports = {
                 res.send(data);
                 return;
             }
+            
             async.series([
                 // 注册
                 function(callback){
@@ -70,7 +71,6 @@ module.exports = {
                             res.send(data);
                             return;
                         }
-                        
                         callback(null,rs[0]);
                     });
                 }

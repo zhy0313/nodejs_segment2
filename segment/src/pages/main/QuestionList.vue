@@ -34,10 +34,17 @@
                                 <li class="type-item pointer" v-for=" (type,index) in question.tagName " :key="index">{{type}}</li>
                             </ul>
                        </span>
-                      
                    </div>
                </div>
            </li>
+       </ul>
+       <!-- 页码 -->
+       <ul class="page">
+           <li class="page-item pre-page"><input type="button" value="上一页" v-show='currentPage > 1' @click="prePage"></li>
+           <li class="page-item more-page-l"><input type="button" value="..." v-show='currentPage > 3 ' disabled></li>
+           <li class="page-item index" :class="{active:currentPage == item, br:currentPage == 1 }" v-for="(item,index) in pages" :key="item" v-show="(item < currentPage+4) && (item > currentPage-3)"><input type="button" :value="item" @click="getCurrentPage(item)"></li>
+           <li class="page-item more-page-r"><input type="button" value="..." v-show='lastPage > 5 && (currentPage < lastPage)' disabled></li>
+           <li class="page-item next-page"><input type="button" value="下一页" v-show='currentPage < lastPage' @click="nextPage"></li>
        </ul>
     </div>
 </template>
@@ -56,7 +63,13 @@ export default {
                 { item:'最新动态', type:'2'},
                 { item:'付费问答', type:'3'},
             ],
-            questionList:[] //最新问答列表
+            questionList:[], //最新问答列表
+            currentPage: 1,    // 当前页
+            pageSize: 1,
+            total: 0,
+            pages:[],
+            lastPage: 0, // 尾页
+            midPage: 0, // 中间页
         }
     },
     filters:{
@@ -78,11 +91,51 @@ export default {
     methods:{
         // 获取问题列表
         getQueList(){
-            QUESTION_LIST().then(res=>{
+            let para = {
+                page: this.currentPage,
+                pageSize: this.pageSize
+            }
+            this.pages = []
+            QUESTION_LIST(para).then(res=>{
                 this.questionList = res.data.data
+                let total = res.data.total
+                this.total = total
+                let pageNum = Math.ceil(total/this.pageSize)
+                this.lastPage = pageNum
+                this.midPage = Math.floor(pageNum/2)
+                
+                if(total>0){
+                    for(let i=1;i<=pageNum;i++){
+                        this.pages.push(i)
+                    }
+                }
+                console.log(this.currentPage);
             })
         },
         
+        // 当前页
+        getCurrentPage(val){
+            this.currentPage = val
+            this.getQueList()
+        },
+
+        // 上一页
+        prePage(){
+            if(this.currentPage>1){
+                this.currentPage--
+                this.getQueList()
+            }
+        },
+
+        // 下一页
+        nextPage(){
+            if(this.currentPage<this.lastPage){
+                this.currentPage++
+                this.getQueList()
+            }
+        },
+
+
         // 跳转问题详情页
         goDetail(val){
             let path = `/q/${val}`
@@ -97,11 +150,21 @@ export default {
 
 <style lang="less" scoped>
     @import url('../../assets/css/mixin.less');
+    // 重置按钮样式
+    input[type='button'] {
+        border:none;
+        outline: none;
+        background-color: #fff;
+        margin:0;
+        padding:0;
+        cursor: pointer;
+    }
 
     .question {
         width: 1116px;
         margin:29px auto 0;
         font-size: 14px;
+
 
         // 导航
         .nav-header {
@@ -234,6 +297,70 @@ export default {
                     }
                 }
             }
+        }
+
+        // 页码
+        .page {
+          text-align: center;
+          font-size: 0;
+          margin-top: 20px;
+
+            // 页码
+            .page-item {
+                display: inline-block;
+                font-size: 12px;
+
+                input {
+                    display: inline-block;
+                    width:40px;
+                    height: 32px;
+                    line-height: 32px;
+                    border: 1px solid #ddd;
+                    border-left: none;
+                }
+
+                &.active input {
+                    background-color: @green;
+                    color:#fff;
+                    border-color: @green;
+                }
+            }
+
+            // 上一页/下一页
+            .pre-page,
+            .next-page{
+                input {
+                    width:65px;
+                    height: 32px;
+                    line-height: 32px;
+                    border:1px solid #ddd;
+
+                }
+            }
+            
+            // 上一页
+            .pre-page input{
+                border-radius: 3px 0 0 3px;
+            }
+            // 下一页
+            .next-page input{
+                border-radius: 0 3px 3px 0;
+            }
+            
+            // 省略页码(左/右)
+            .more-page-l input,
+            .more-page-r input{
+                cursor: not-allowed;
+             
+            }
+            .more-page-r input {
+                border-right: none;
+            }
+
+            .br input {
+                border-radius: 3px 0 0 3px;
+            }
+
         }
     }
 </style>
