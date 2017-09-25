@@ -1,4 +1,5 @@
-import axios from 'axios';
+// import axios from 'axios';
+import axios from './http';
 import qs from 'qs';
 
 let base = '/node';

@@ -24,8 +24,8 @@
                <!-- 问题 -->
                <div class="question-wrapper">
                    <div class="respondents">
-                       <a href="#">{{question.lastRespondents}}</a>
-                       <a href="#">{{question.time}}</a>
+                       <a href="javascript:;">{{question.lastRespondents | formatResp}}</a>
+                       <a href="javascript:;">{{question.time}}</a>
                    </div>
                    <div class="question-title">
                        <span class="title">
@@ -42,7 +42,7 @@
        <ul class="page">
            <li class="page-item pre-page"><input type="button" value="上一页" v-show='currentPage > 1' @click="prePage"></li>
            <li class="page-item more-page-l"><input type="button" value="..." v-show='currentPage > 3 ' disabled></li>
-           <li class="page-item index" :class="{active:currentPage == item, br:currentPage == 1 }" v-for="(item,index) in pages" :key="item" v-show="(item < currentPage+4) && (item > currentPage-3)"><input type="button" :value="item" @click="getCurrentPage(item)"></li>
+           <li class="page-item" :class="{active:currentPage == item, br:currentPage == 1, bl: currentPage== lastPage }" v-for="(item,index) in pages" :key="item" v-show="(item < currentPage+4) && (item > currentPage-3)"><input type="button" :value="item" @click="getCurrentPage(item)"></li>
            <li class="page-item more-page-r"><input type="button" value="..." v-show='lastPage > 5 && (currentPage < lastPage)' disabled></li>
            <li class="page-item next-page"><input type="button" value="下一页" v-show='currentPage < lastPage' @click="nextPage"></li>
        </ul>
@@ -86,6 +86,16 @@ export default {
                 break
             }
             return type
+        },
+        formatResp(val){
+            let res;
+            if(val == undefined){
+                res =  '暂无回答'
+            }else {
+                res = val
+            }
+            return res;
+            
         }
     },
     methods:{
@@ -252,24 +262,24 @@ export default {
                         position: absolute;
                         top:0;
                         a {
+                            font-size: 12px;
                             color: @gray-l;
                             margin-right: 5px;
                             &:hover {
                                 text-decoration: underline;
                             }
                         }
-
-
                     }
 
                     // 问题标题
                     .question-title {
                         margin-top: 22px;
                         .title {
-                            font-size: 16px;
+                            
                             line-height: 1;
                             a {
                                 color:#333;
+                                font-size: 18px;
                                 &:hover {
                                     color:@green;
                                     text-decoration: underline;
@@ -303,7 +313,7 @@ export default {
         .page {
           text-align: center;
           font-size: 0;
-          margin-top: 20px;
+          margin: 20px 0;
 
             // 页码
             .page-item {
@@ -316,6 +326,7 @@ export default {
                     height: 32px;
                     line-height: 32px;
                     border: 1px solid #ddd;
+                    color: @green;
                     border-left: none;
                 }
 
@@ -357,10 +368,15 @@ export default {
                 border-right: none;
             }
 
+            // 首页圆角
             .br input {
                 border-radius: 3px 0 0 3px;
             }
 
+            // 尾页圆角
+            .bl input {
+                border-radius: 0 3px 3px 0;
+            }
         }
     }
 </style>
