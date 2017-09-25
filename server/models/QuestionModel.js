@@ -58,8 +58,6 @@ module.exports = {
 
     /**
      * 获取问题列表
-     * todo
-     * 标签为数组
      */
     questionList(req,res){
         let data = {

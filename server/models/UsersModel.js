@@ -10,8 +10,11 @@ pool.on('connection', function (connection) {
 module.exports = {
     // 注册
     register(req,res){
+        // 注册
         let addUserSql = 'insert into user (username,email,mobile,pwd) values(?,?,?,?)';
-        let querySql  = 'select uid from user where username=?';
+
+        // 读取新用户uid
+        let querySql  = 'select uid from user where username = ?';
 
         let body = req.body;
         let email = body.email == '' ? null : body.email;       // 为空则存储null
@@ -22,7 +25,8 @@ module.exports = {
         pool.getConnection((err,conn)=>{
             let data = {
                 code: 200,
-                msg: ''
+                msg: '',
+                data:''
             };
             if(err) {
                 data.code = 400;
@@ -30,10 +34,9 @@ module.exports = {
                 res.send(data);
                 return;
             }
-
             async.series([
                 // 注册
-                (callback)=>{
+                function(callback){
                     conn.query(addUserSql,params,(err)=>{
                         if(err){
                             console.log(`写入异常:${err}`);
@@ -54,18 +57,12 @@ module.exports = {
                             res.send(data);
                             return;
                         }
-                        
-                        // todo/拿到user_id 放入session
-                        // req.session.sessionID = body.name;
-                        // data.msg = 'success';
-                        // res.send(data);
+                        callback(null,'register');
                     });
-                    callback(null,'register');
                 },
 
                 // 读取新用户的uid
-                (callback)=>{
-                    let rs;
+                function(callback){
                     conn.query(querySql,queryParams,(err,rs)=>{
                         if(err){
                             data.code = 400;
@@ -73,15 +70,17 @@ module.exports = {
                             res.send(data);
                             return;
                         }
-                        rs = rs;
+                        
+                        callback(null,rs[0]);
                     });
-                    callback(null,rs);
                 }
-            ],(err,result)=>{
-                console.log(result);
+            ],
+            function(err,result){
+                //拿到user_id 放入session
+                req.session.sessionID = result[1].uid;
+                data.msg = 'success';
+                res.send(data);
             });
-
-            
             conn.release();
         });
     },
@@ -138,26 +137,7 @@ module.exports = {
 
     // 查询用户列表
     getUserList(req,res){
-
-        // =========测试debugger====================== 
-            let a = 1;
-            console.log(a);
-            let b = 2;
-            console.log(b);
-            let c = [1,2,3];
-            console.log(c);
-            let d = function(){
-                return {
-                    node: 'debugger'
-                }
-            };
-            console.log(d);
-            let e = 5;
-            console.log(e);
-            
-        //==============测试debugger=====================    
-
-        let getUserSql = ' select * from user';
+        let getUserSql = ' select uid,username from user';
         let params = [];
       
         pool.getConnection((err,conn)=>{
