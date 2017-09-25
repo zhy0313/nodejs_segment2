@@ -29,7 +29,6 @@ const router = new Router({routes});
 
 // 导航钩子
 router.beforeEach((to, from, next) => {
-
     // 更新一级导航状态
     if(to.path == '/question' || to.path == '/myindex'){
         store.commit('updateWriteTypeCode',-1);

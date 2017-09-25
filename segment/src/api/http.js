@@ -1,18 +1,17 @@
 import axios from 'axios';
-import router from '../router/router';
-
-// http request 拦截器
+import store from '../vuex/store';
 
 
 // http response 拦截器
 axios.interceptors.response.use(
-    response => {
+    (response) => {
         if(response.data.code == 402){
-            console.log('登录过期');
-            // router.replace({path:'/login'})
+            // alert('登录过期,请重新登录');
+            store.commit('reLogin',true,true);
+            sessionStorage.removeItem('segUser');
             return;
         }
-       
-    });
-
+        return response;
+    }
+);
 export default axios;

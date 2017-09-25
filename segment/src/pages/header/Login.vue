@@ -5,6 +5,7 @@
         <div class="user-wrapper">
             <div class="title">
                 <span>登录</span>
+                <span class="overdue" v-if='showOverdue'>登录过期,请重新登录</span>
                 <span class="close pointer" @click='hide'>×</span>
             </div>
             <!-- 注册框 -->
@@ -100,7 +101,11 @@ export default {
           
         }
     },
-
+    computed:{
+        showOverdue(){
+            return this.$store.state.isOverdue;
+        }
+    },
     methods:{
         // 获取短信验证码
         getMobileCode(){
@@ -273,15 +278,8 @@ export default {
         }
     },
 
-    updated(){
-        
-    },
-
     created(){
-        // let tel = 15260435516
-        // console.log(tel)
-        // let reg = /^1[3|4|5|7|8]\d{9}$/;
-        // console.log(reg.test(tel))
+        
     }
 
 }
@@ -320,6 +318,13 @@ export default {
                 background-color: #f3f3f3;
                 border-radius: 5px 5px 0 0;
 
+                // 过期
+                .overdue {
+                    color:red;
+                    font-size: 12px;
+                }
+
+                // 关闭按钮
                 .close {
                     float: right;
                     font-size: 25px;

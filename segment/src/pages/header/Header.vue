@@ -61,10 +61,9 @@ export default {
     },
     data(){
         return{
-            // writeTypeCode:-1,   // 一级导航类型
             writeType: '提问', //写作类型
             activeNav: 0, //headnav 激活状态
-            showLogin:false,
+            //showLogin:false,
             showLoginBtn:true,
             showQueList:true,
             questionList:[
@@ -112,6 +111,11 @@ export default {
             set: function (newValue) {
                 this.$store.state.writeTypeCode
             }
+        },
+
+        // 显示登录
+        showLogin(){
+            return this.$store.state.hasLogin;
         }
     },
     methods:{
@@ -144,7 +148,7 @@ export default {
         },
         // 收起注册/登录框
         hide(){
-            this.showLogin = false;
+            this.$store.commit('reLogin',false,false);
         },
 
         // 登录成功
@@ -155,7 +159,7 @@ export default {
 
         // 注册/登录
         login(){
-            this.showLogin = true
+            this.$store.commit('reLogin',true,false);
         },
 
         // 退出
