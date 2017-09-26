@@ -6,8 +6,8 @@ Vue.use(Vuex);
 export default new Vuex.Store({
     state:{
         hasLogin:false, //是否登录
-        writeTypeCode: -1, //一级导航
-        isOverdue: false    // 是否登录过期
+        isOverdue: false,    // 是否登录过期
+        writeTypeCode: -1  //一级导航
     },
 
     mutations:{
@@ -25,10 +25,10 @@ export default new Vuex.Store({
         },
         
         // 重新登录
-        reLogin(state,payload,overdue){
+        reLogin(state,payload){
             console.log('重新登录22',payload);
-            state.hasLogin = payload;
-            state.isOverdue = overdue;
+            state.hasLogin = payload.hasLogin;
+            state.isOverdue = payload.isOverdue;
             
         },
 

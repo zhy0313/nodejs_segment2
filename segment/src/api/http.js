@@ -7,7 +7,11 @@ axios.interceptors.response.use(
     (response) => {
         if(response.data.code == 402){
             // alert('登录过期,请重新登录');
-            store.commit('reLogin',true,true);
+            let payload = {
+                hasLogin: true,
+                isOverdue: true
+            };
+            store.commit('reLogin',payload);
             sessionStorage.removeItem('segUser');
             return;
         }

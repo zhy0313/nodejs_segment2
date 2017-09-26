@@ -148,7 +148,11 @@ export default {
         },
         // 收起注册/登录框
         hide(){
-            this.$store.commit('reLogin',false,false);
+            let payload = {
+                hasLogin: false,
+                isOverdue: false
+            };
+            this.$store.commit('reLogin',payload);
         },
 
         // 登录成功
@@ -159,7 +163,11 @@ export default {
 
         // 注册/登录
         login(){
-            this.$store.commit('reLogin',true,false);
+            let payload = {
+                hasLogin: true,
+                isOverdue: false
+            };
+            this.$store.commit('reLogin',payload);
         },
 
         // 退出
