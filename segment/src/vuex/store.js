@@ -26,22 +26,10 @@ export default new Vuex.Store({
         
         // 重新登录
         reLogin(state,payload){
-            console.log('重新登录22',payload);
             state.hasLogin = payload.hasLogin;
             state.isOverdue = payload.isOverdue;
             
         },
-
-        // 检测登录
-        // checkLogin(state){
-        //     if(sessionStorage.getItem('segUser')){
-        //         console.log('已登录');
-        //         state.hasLogin = true;
-        //     }else {
-        //         console.log('未登录');
-        //         state.hasLogin = false;
-        //     }
-        // },
     }
 });
 

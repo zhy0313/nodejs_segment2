@@ -6,7 +6,6 @@ import store from '../vuex/store';
 axios.interceptors.response.use(
     (response) => {
         if(response.data.code == 402){
-            // alert('登录过期,请重新登录');
             let payload = {
                 hasLogin: true,
                 isOverdue: true
