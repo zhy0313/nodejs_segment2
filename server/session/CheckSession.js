@@ -1,5 +1,5 @@
 module.exports = {
-    check(req,res){
+    check(req){
         let id = req.session.sessionID;
         let data = {
             code: 200,

@@ -21,6 +21,12 @@ export const QUESTION_LIST = params => {return axios.get(`${base}/question/quest
 // 获取问题详情
 export const QUESTION_DETAIL = params => { return axios.get(`${base}/question/question_detail`,{params:params});};
 
+// 获取用户信息
+export const GET_USER_INFO = params => { return axios.get(`${base}/users/userinfo`,{params:params});};
+
+
+
+
 
 //===========================================================================
 

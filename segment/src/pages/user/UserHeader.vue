@@ -9,7 +9,8 @@
 		  </div>
 		  <!-- 用户信息 -->
 		  <div class="user-info">
-			<h2>{{userInfo.username}}-{{userInfo.mobile}}-{{userInfo.email}}</h2>
+			<h2>{{userInfo.username}}</h2>
+			<p></p>
 			<div class="badge">
 				<span class="reputation">{{reputation}} 声望</span>
 			</div>
@@ -19,7 +20,7 @@
 </template>
 
 <script>
-import { GET_USER_LIST } from '@/api/api';
+import { GET_USER_INFO } from '@/api/api';
 
 export default {
 	data(){
@@ -36,14 +37,22 @@ export default {
 		}
 	},
 	methods:{
-		testSession(){
-			GET_USER_LIST().then(res=>{
-				console.log('testsession',res.data)
+		// 获取用户信息
+		getUserInfo(){
+			GET_USER_INFO().then(res=>{
+				console.log(res.data)
+				let data = res.data
+				if(data.code == 200){
+					this.userInfo.username = data.data.username;
+					this.userInfo.mobile = data.data.mobile != 'null' ? data.data.mobile : '未填写'
+					this.userInfo.email = data.data.email !== 'null' ? data.data.email : '未填写'
+
+				}
 			})
 		}
 	},
 	mounted(){
-		this.testSession();
+		this.getUserInfo();
 	}
 }
 </script>

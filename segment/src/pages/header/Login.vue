@@ -188,8 +188,6 @@ export default {
                     this.validate.loginMsg = res.data.msg;
                     this.validate.loginPwdMsg = res.data.msg;
                 }else {
-                    let data = JSON.stringify(res.data.msg)
-                    sessionStorage.setItem('segUser',data)
                     this.hide();
                     this.hasLogin();
                 }

@@ -25,6 +25,19 @@ router.get('/logout',(req,res)=>{
     });
 });
 
+// 获取用户信息
+router.get('/userinfo',(req,res)=>{
+    //验证session
+    let result = checkSession.check(req);
+    if (result.code == 402) {
+        res.send(result);
+        return;
+    }
+    UsersModel.getUserInfo(req,res);
+});
+
+
+//===========================
 // 查询用户列表
 router.get('/getlist', function (req, res) {
     //验证session

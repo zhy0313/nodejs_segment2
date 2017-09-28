@@ -6,7 +6,7 @@ var checkSession = require('../session/CheckSession');
 // 提问
 router.post('/ask_question',(req,res)=>{
     //验证session
-    let result = checkSession.check(req, res);
+    let result = checkSession.check(req);
     if (result.code == 402) {
         res.send(result);
         return;

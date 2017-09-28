@@ -87,9 +87,6 @@ module.exports = {
 
     // 登录
     login(req,res){
-        // console.log('session::',req.session);
-        // TODO
-        // setToken
 
         let loginSql = 'select uid,username from user where (email=? or mobile=?) and pwd=?';
         let body = req.body;
@@ -110,7 +107,6 @@ module.exports = {
 
             conn.query(loginSql,params,(err,rs)=>{
                 if(err){
-                    console.log(`错误2:${err.message}`);
                     data.code = 401,
                     data.msg = err.message,
                     res.send(data);
@@ -135,6 +131,43 @@ module.exports = {
         });
     },
 
+    // 查询用户信息
+    getUserInfo(req,res){
+        let userSql = 'select mobile, email, username, create_time from user where uid = ? ';
+        let params = [req.session.sessionID];
+
+        pool.getConnection((err,conn)=>{
+            let data = {
+                code: 200,
+                msg: 'success',
+                data: ''
+            };
+            if(err){
+                data.code = 401;
+                data.msg = err.message;
+                res.send(data);
+                return;
+            }
+
+            conn.query(userSql,params,(err,rs)=>{
+                if(err){
+                    data.code = 401;
+                    data.msg = err.message;
+                    res.send(data);
+                    return;
+                }
+                if(rs.length>0){
+                    data.data = rs[0];
+                }else{
+                    data.msg = '无此用户';
+                }
+                res.send(data);
+            });
+        });
+    },
+
+
+    //=========================
     // 查询用户列表
     getUserList(req,res){
         let getUserSql = ' select uid,username from user';
