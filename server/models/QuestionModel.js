@@ -136,8 +136,13 @@ module.exports = {
             data:''
         };
         
+        // 查看问题详情
         let queSql = 'select q.q_title as title, q.q_content as content,u.username, q.q_tag as tags, q.create_time, q.last_res_time,q.last_res_id from questions as q inner join user as u on q.user_id = u.uid where q_id=?';
         let param = req.query.q_id;
+
+        // views+1
+        let uptSql = ' update questions set views=views+1 where q_id = ?';
+
         pool.getConnection((err,conn)=>{
             if(err){
                 data.code = 401;
@@ -145,18 +150,34 @@ module.exports = {
                 res.send(data);
                 return;
             }
-            conn.query(queSql,param,(err,rs)=>{
+            async.series([
+                // 查看问题详情
+                function(callback){
+                    conn.query(queSql,param,(err,rs)=>{
+                        let result = rs[0];
+                        result.content = result.content.toString(); 
+                        data.data = result;
+                        // res.send(data);
+                        callback(null,data);
+                    });
+                },
+                // views+1
+                function(callback){
+                    conn.query(uptSql,param,(err,rs)=>{
+                        
+                        callback(null,rs);
+                    }); 
+                    
+                }
+            ],
+            function(err,rs){
                 if(err){
                     data.code = 400;
                     data.msg = err.message;
                     res.send(data);
                     return;
                 }
-                
-                let result = rs[0];
-                result.content = result.content.toString(); 
-                data.data = result;
-                res.send(data);
+                res.send(rs[0]);
             });
             conn.release();
         });

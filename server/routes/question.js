@@ -19,7 +19,7 @@ router.get('/question_list',(req,res)=>{
     QuestionModel.questionList(req,res);
 });
 
-// 问题详情
+// 查看问题详情
 router.get('/question_detail',(req,res)=>{
     QuestionModel.questionDetail(req,res);
 });
