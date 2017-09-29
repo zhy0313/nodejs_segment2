@@ -65,7 +65,7 @@ export default {
             ],
             questionList:[], //最新问答列表
             currentPage: 1,    // 当前页
-            pageSize: 1,
+            pageSize: 3,
             total: 0,
             pages:[],
             lastPage: 0, // 尾页

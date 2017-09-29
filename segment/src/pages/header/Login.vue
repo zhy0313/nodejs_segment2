@@ -143,12 +143,12 @@ export default {
             if( this.validateReg() ){
                 REGISTER(para).then(res=>{
                     let data = res.data;
-                    console.log(res)
                     if(data.code == 200){   //注册成功
                         let msg = JSON.stringify(data.msg)
                         sessionStorage.setItem('segUser',msg)
                         this.hide(); 
                         this.hasLogin();
+                        
                     }else if( data.code == 400 ){ //注册失败
                         switch(data.errType){
                             case 'name':
@@ -261,23 +261,34 @@ export default {
             }
             return true
         },
-        
-
-       
 
         // 关闭登录注册框
         hide(){
-            this.$emit('hide')
+            this.$store.commit('showLogin',false)
         },
 
-        // 登录成功
+        // 登录/注册成功
         hasLogin(){
-            this.$emit('hasLogin')
+            // 关闭登录注册框
+            this.hide();
+
+            //关闭 header登录/注册按钮
+            this.$store.commit('toggleLoginBtn',false)
+
+            // 本地保存登录状态
+            this.$store.commit('saveState')
+            
+            
+            // myindex页面刷新router重新获取数据
+            if(this.$route.path == '/myindex'){
+                this.$router.go(0)
+                console.log(this.$route)
+            }
         }
     },
 
     created(){
-        
+       
     }
 
 }

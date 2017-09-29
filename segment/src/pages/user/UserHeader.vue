@@ -10,10 +10,12 @@
 		  <!-- 用户信息 -->
 		  <div class="user-info">
 			<h2>{{userInfo.username}}</h2>
-			<p></p>
+			<p class="info-item">手机号: {{userInfo.mobile}}</p>
+			<p class='info-item'>邮箱: {{userInfo.email}}</p>
 			<div class="badge">
 				<span class="reputation">{{reputation}} 声望</span>
 			</div>
+			
 		  </div>
 	  </div>
   </div>
@@ -26,7 +28,7 @@ export default {
 	data(){
 		return {
 			avator:require('@/assets/images/user.png'),
-			userName: 'a1',
+			userName: '',
 			reputation: 1,
 			showUpdAvator: false,
 			userInfo:{
@@ -40,19 +42,27 @@ export default {
 		// 获取用户信息
 		getUserInfo(){
 			GET_USER_INFO().then(res=>{
-				console.log(res.data)
 				let data = res.data
+				console.log(data)
 				if(data.code == 200){
 					this.userInfo.username = data.data.username;
-					this.userInfo.mobile = data.data.mobile != 'null' ? data.data.mobile : '未填写'
-					this.userInfo.email = data.data.email !== 'null' ? data.data.email : '未填写'
-
+					this.userInfo.mobile = data.data.mobile == null ? '未填写' : data.data.mobile
+					this.userInfo.email = data.data.email == null ?  '未填写' : data.data.email
 				}
 			})
+		},
+
+		// 更新一级导航状态
+		updateWriteTypeCode(){
+			this.$store.commit('updateWriteTypeCode',-1)
+			
 		}
+
 	},
 	mounted(){
 		this.getUserInfo();
+		
+		this.updateWriteTypeCode();
 	}
 }
 </script>
@@ -118,8 +128,16 @@ export default {
 				font-weight: 500;
 				font-size: 30px;
 				margin-bottom: 10px;
+				display: inline-block;
 			}
-	
+			
+			.info-item {
+				display: inline-block;
+				font-size: 12px;
+				color:#666;
+				padding:5px;
+			}
+			
 			// 徽章
 			.badge {
 				text-align: center;
