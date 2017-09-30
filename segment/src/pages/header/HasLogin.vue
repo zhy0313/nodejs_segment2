@@ -21,7 +21,7 @@
             <img src="../../assets/images/user.png" alt="" class="user pointer">
 
             <ul class="user-info pointer" v-show="showUserInfo">
-                <li class="info-item" @click="goRouter('/myindex',1)">我的主页</li>        
+                <li class="info-item" @click="goRouter('/myindex',-1)">我的主页</li>        
                 <li class="info-item" @click="logout">退出</li>        
             </ul>
         </div>
@@ -41,10 +41,10 @@ export default {
         // 退出
         logout(){
             LOGOUT().then(res=>{
-                console.log(res);
                 if(res.data.code == 200){
-                    sessionStorage.removeItem('segUser')
-                    this.$emit('hasLogout')
+                    this.$store.commit('toggleLoginBtn',true)
+                    this.$store.commit('saveState')
+                    this.$router.push({path:'/question'})
                 }
             })
         },
@@ -55,6 +55,7 @@ export default {
 
             // 触发父组件changeWriteMode事件
             this.$emit('changeWriteMode',type)
+            
         }
     }
 }
@@ -128,6 +129,7 @@ export default {
                 background-color: #fff;
                 color:@gray-l;
                 text-align: center;
+                z-index: 2;
 
                 .sub-nav-item {
                     &:hover {

@@ -8,10 +8,10 @@ axios.interceptors.response.use(
         if(response.data.code == 402){
             let payload = {
                 hasLogin: true,
-                isOverdue: true
+                isOverdue: true,
+                showLogin: true
             };
             store.commit('reLogin',payload);
-            sessionStorage.removeItem('segUser');
             return;
         }
         return response;

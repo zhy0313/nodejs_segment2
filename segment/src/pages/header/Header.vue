@@ -30,7 +30,7 @@
             </div>
             <!-- 已登录 -->
             <div class="haslogin-wrapper" v-else>
-                <has-login @hasLogout='hasLogout' @changeWriteMode='changeWriteMode'></has-login>
+                <has-login @changeWriteMode='changeWriteMode'></has-login>
             </div>
         </div>
         <!-- 二级导航 -->
@@ -47,7 +47,7 @@
             </ul>
         </div>
         <!-- 登录/注册  -->
-        <login @hide='hide' @hasLogin='hasLogin' v-if="showLogin"></login>
+        <login v-if="showLogin"></login>
     </div>
 </template>
 <script>
@@ -63,8 +63,6 @@ export default {
         return{
             writeType: '提问', //写作类型
             activeNav: 0, //headnav 激活状态
-            //showLogin:false,
-            showLoginBtn:true,
             showQueList:true,
             questionList:[
                 { id:0,label:'全部'},
@@ -109,20 +107,27 @@ export default {
                 return  this.$store.state.writeTypeCode
             },
             set: function (newValue) {
-                this.$store.state.writeTypeCode
+                this.$store.commit('updateWriteTypeCode',newValue)
             }
         },
 
         // 显示登录
         showLogin(){
-            return this.$store.state.hasLogin;
+            return this.$store.state.showLogin;
+        },
+
+        // 显示登录注册按钮
+        showLoginBtn(){
+            return this.$store.state.showLoginBtn
         }
     },
+
     methods:{
         // 改变写作类型
         changeWriteMode(type){
             this.writeTypeCode = type
             this.$store.commit('updateWriteTypeCode',type)
+            this.$store.commit('saveState')
             switch(type){
                 case 0:
                 this.writeType = '提问'
@@ -146,43 +151,13 @@ export default {
             
 
         },
-        // 收起注册/登录框
-        hide(){
-            let payload = {
-                hasLogin: false,
-                isOverdue: false
-            };
-            this.$store.commit('reLogin',payload);
-        },
-
-        // 登录成功
-        hasLogin(){
-            let data = JSON.parse(sessionStorage.getItem('segUser'))
-            this.showLoginBtn = false
-        },
 
         // 注册/登录
         login(){
-            let payload = {
-                hasLogin: true,
-                isOverdue: false
-            };
-            this.$store.commit('reLogin',payload);
-        },
-
-        // 退出
-        hasLogout(){
-            this.showLoginBtn = true
-        },
-
-        // 检测登录
-        checkLogin(){
-            if(sessionStorage.getItem('segUser')){
-                this.showLoginBtn = false
-            }else {
-                this.showLoginBtn = true
-            }
+            this.$store.commit('showLogin',true);
         }
+
+        
     },
 
     directives: {
@@ -207,12 +182,9 @@ export default {
     },  
    
     mounted(){
-        //  console.log('header',this.writeTypeCode)
     },
 
     created(){
-        // 检测登录
-        this.checkLogin();
 
     }
 }
